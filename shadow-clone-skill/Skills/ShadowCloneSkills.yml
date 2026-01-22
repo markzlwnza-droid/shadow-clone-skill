@@ -244,17 +244,28 @@ ShadowClone_ArrowHit:
 
 
 # ================================
-# FOLLOW OWNER
+# FOLLOW OWNER (Primary: AI Goal, Backup: Skill)
 # ================================
+# เดินตามเจ้าของเมื่อห่างเกิน 5 บล็อก
 ShadowClone_FollowOwner:
-  Cooldown: 2
+  Cooldown: 1
   TargetConditions:
-  - distance{d=>12} @owner
+  - distance{d=>5} @owner
   Skills:
-  - effect:particles{p=portal;a=10;s=0.25} @self
-  - delay 2
+  - goto{t=@owner;s=0.35} @self
+
+# Teleport ฉุกเฉินเมื่อห่างไกลเกิน 20 บล็อก
+ShadowClone_FollowOwner_Teleport:
+  Cooldown: 3
+  TargetConditions:
+  - distance{d=>20} @owner
+  Skills:
+  - effect:particles{p=portal;a=15;s=0.3} @self
+  - effect:sound{s=entity.enderman.teleport;v=0.5;p=1.2} @self
+  - delay 3
   - teleport @owner
   - effect:particles{p=large_smoke;a=12;s=0.3} @self
+  - 'actionmessage{m="<&b>↯ <&7>Clone teleported to you!"} @owner'
 
 
 # ================================

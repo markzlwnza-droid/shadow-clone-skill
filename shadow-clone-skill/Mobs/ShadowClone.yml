@@ -37,9 +37,10 @@ ShadowClone:
   AIGoalSelectors:
   - clear
   - float 0
-  - meleeattack 1
-  - bowshoot 2
-  - movetowardstarget 3
+  - followowner 1
+  - meleeattack 2
+  - bowshoot 3
+  - movetowardstarget 4
   
   AITargetSelectors:
   - clear
@@ -62,8 +63,9 @@ ShadowClone:
   # Status Display (every 3 seconds)
   - skill{s=ShadowClone_StatusDisplay} @self ~onTimer:60
   
-  # Follow & Check Owner (every 5 seconds)
-  - skill{s=ShadowClone_FollowOwner} @self ~onTimer:100
+  # Follow & Check Owner
+  - skill{s=ShadowClone_FollowOwner} @self ~onTimer:40
+  - skill{s=ShadowClone_FollowOwner_Teleport} @self ~onTimer:60
   - skill{s=ShadowClone_CheckOwnerOnline} @self ~onTimer:40
   
   # Mode AI (every 2 seconds) - Support mode heal/buff
@@ -106,8 +108,9 @@ ShadowClone_Melee:
   AIGoalSelectors:
   - clear
   - float 0
-  - meleeattack 1
-  - movetowardstarget 2
+  - followowner 1
+  - meleeattack 2
+  - movetowardstarget 3
   
   AITargetSelectors:
   - clear
@@ -132,7 +135,8 @@ ShadowClone_Melee:
   
   # Status & Follow
   - skill{s=ShadowClone_StatusDisplay} @self ~onTimer:60
-  - skill{s=ShadowClone_FollowOwner} @self ~onTimer:100
+  - skill{s=ShadowClone_FollowOwner} @self ~onTimer:40
+  - skill{s=ShadowClone_FollowOwner_Teleport} @self ~onTimer:60
   - skill{s=ShadowClone_CheckOwnerOnline} @self ~onTimer:40
   
   # Mode AI & Aura
@@ -174,8 +178,9 @@ ShadowClone_Archer:
   AIGoalSelectors:
   - clear
   - float 0
-  - bowshoot 1
-  - movetowardstarget 2
+  - followowner 1
+  - bowshoot 2
+  - movetowardstarget 3
   
   AITargetSelectors:
   - clear
@@ -199,7 +204,8 @@ ShadowClone_Archer:
   
   # Status & Follow
   - skill{s=ShadowClone_StatusDisplay} @self ~onTimer:60
-  - skill{s=ShadowClone_FollowOwner} @self ~onTimer:120
+  - skill{s=ShadowClone_FollowOwner} @self ~onTimer:40
+  - skill{s=ShadowClone_FollowOwner_Teleport} @self ~onTimer:60
   - skill{s=ShadowClone_CheckOwnerOnline} @self ~onTimer:40
   
   # Mode AI & Aura
