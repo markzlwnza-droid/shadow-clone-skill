@@ -1,0 +1,254 @@
+# ================================================
+# SHADOW CLONE - WEAPON SKILLS SYSTEM (Optimized + Multiplayer)
+# ================================================
+# ใส่ไฟล์นี้ใน: plugins/MythicMobs/Skills/ShadowCloneWeaponSkills.yml
+# Compatible with: MythicMobs 5.3+, ModelEngine 4+ (optional)
+# Performance Optimized v1.3
+
+# ================================
+# MAIN WEAPON SKILL DISPATCHER
+# ================================
+ShadowClone_WeaponSkill:
+  Cooldown: 3
+  Conditions:
+  - "!isowner"
+  Skills:
+  # === SWORDS ===
+  - skill{s=Clone_FlameSwordSkill} @target ?wearing{slot=hand;m=DIAMOND_SWORD;n=~Flame}
+  - skill{s=Clone_IceSwordSkill} @target ?wearing{slot=hand;m=DIAMOND_SWORD;n=~Ice}
+  - skill{s=Clone_ThunderSwordSkill} @target ?wearing{slot=hand;m=NETHERITE_SWORD;n=~Thunder}
+  - skill{s=Clone_VoidSwordSkill} @target ?wearing{slot=hand;m=NETHERITE_SWORD;n=~Void}
+  
+  # === AXES ===
+  - skill{s=Clone_BerserkerAxeSkill} @target ?wearing{slot=hand;m=DIAMOND_AXE;n=~Berserker}
+  - skill{s=Clone_ExecutionerAxeSkill} @target ?wearing{slot=hand;m=NETHERITE_AXE;n=~Executioner}
+  
+  # === BOWS ===
+  - skill{s=Clone_FrostBowSkill} @target ?wearing{slot=hand;m=BOW;n=~Frost}
+  - skill{s=Clone_ExplosiveBowSkill} @target ?wearing{slot=hand;m=BOW;n=~Explosive}
+  - skill{s=Clone_SniperBowSkill} @target ?wearing{slot=hand;m=CROSSBOW;n=~Sniper}
+  
+  # === DEFAULT ===
+  - skill{s=ShadowClone_BasicAttack} @target
+
+
+# ================================
+# SWORD SKILLS - OPTIMIZED
+# ================================
+
+# 🔥 Flame Sword
+Clone_FlameSwordSkill:
+  Cooldown: 4
+  Conditions:
+  - "!isowner"
+  Skills:
+  - message{m="&c&l🔥 &7ร่างเงาใช้ &cFire Slash&7!"} @owner
+  # ลด particles (40 -> 20)
+  - effect:particles{p=flame;a=20;s=0.5} @self
+  - effect:sound{s=item.firecharge.use;v=0.8;p=0.8} @self
+  - delay 5
+  - damage{a=12;ignorearmor=true} @target
+  - ignite{d=60} @target
+  - effect:particles{p=lava;a=8;s=0.25} @target
+
+# ❄️ Ice Sword
+Clone_IceSwordSkill:
+  Cooldown: 4
+  Conditions:
+  - "!isowner"
+  Skills:
+  - message{m="&b&l❄ &7ร่างเงาใช้ &bFrost Slash&7!"} @owner
+  # ลด particles (50 -> 25)
+  - effect:particles{p=snowflake;a=25;s=0.5} @self
+  - effect:sound{s=block.glass.break;v=0.8;p=1.5} @self
+  - delay 5
+  - damage{a=10} @target
+  - potion{t=SLOWNESS;d=80;l=2} @target
+  - potion{t=MINING_FATIGUE;d=40;l=1} @target
+  - effect:particles{p=block{b=BLUE_ICE};a=12;s=0.3} @target
+
+# ⚡ Thunder Sword
+Clone_ThunderSwordSkill:
+  Cooldown: 5
+  Conditions:
+  - "!isowner"
+  Skills:
+  - message{m="&e&l⚡ &7ร่างเงาใช้ &eLightning Strike&7!"} @owner
+  # ลด particles (60 -> 30)
+  - effect:particles{p=electric_spark;a=30;s=0.6} @self
+  - effect:sound{s=entity.lightning_bolt.thunder;v=0.5;p=2} @self
+  - delay 5
+  - damage{a=18} @target
+  - lightning @target
+  - potion{t=GLOWING;d=80} @target
+  - delay 5
+  # Chain lightning
+  - damage{a=8} @EntitiesInRadius{r=3;types=!PLAYER}
+  - effect:particles{p=electric_spark;a=10;s=0.4} @EntitiesInRadius{r=3}
+
+# 🌑 Void Sword
+Clone_VoidSwordSkill:
+  Cooldown: 5
+  Conditions:
+  - "!isowner"
+  Skills:
+  - message{m="&8&l✦ &7ร่างเงาใช้ &8Void Rend&7!"} @owner
+  # ลด particles (80+50 -> 40+25)
+  - effect:particles{p=smoke;a=40;s=0.8} @self
+  - effect:particles{p=portal;a=25;s=0.6} @self
+  - effect:sound{s=entity.enderman.teleport;v=0.8;p=0.5} @self
+  - delay 5
+  - damage{a=20;ignorearmor=true} @target
+  - potion{t=BLINDNESS;d=30} @target
+  - potion{t=WITHER;d=40;l=1} @target
+  - effect:particles{p=squid_ink;a=15;s=0.4} @target
+
+
+# ================================
+# AXE SKILLS - OPTIMIZED
+# ================================
+
+# 💢 Berserker Axe
+Clone_BerserkerAxeSkill:
+  Cooldown: 4
+  Conditions:
+  - "!isowner"
+  Skills:
+  - message{m="&4&l💢 &7ร่างเงาใช้ &4Rage Cleave&7!"} @owner
+  # ลด particles (60 -> 30)
+  - effect:particles{p=crit;a=30;s=0.8} @self
+  - effect:sound{s=entity.player.attack.crit;v=0.8;p=0.6} @self
+  - delay 3
+  # AOE damage
+  - damage{a=15} @EntitiesInRadius{r=3;types=!PLAYER}
+  - throw{v=0.5;vy=0.25} @EntitiesInRadius{r=3;types=!PLAYER}
+  - effect:particles{p=sweep_attack;a=3;s=0.8} @self
+  - delay 10
+  # Self buff
+  - potion{t=STRENGTH;d=80;l=1} @self
+
+# ⚰️ Executioner Axe
+Clone_ExecutionerAxeSkill:
+  Cooldown: 6
+  TargetConditions:
+  - health{h=<50%}
+  - "!isowner"
+  Skills:
+  - message{m="&4&l⚰ &7ร่างเงาใช้ &4EXECUTE&7!"} @owner
+  # ลด particles (100 -> 50)
+  - effect:particles{p=damage_indicator;a=50;s=1.2} @target
+  - effect:sound{s=entity.wither.break_block;v=0.8;p=0.5} @self
+  - delay 5
+  - damage{a=50;ignorearmor=true} @target
+  - effect:particles{p=soul;a=15;s=0.6} @target
+  - effect:sound{s=entity.wither.death;v=0.4;p=1.5} @target
+
+Clone_ExecutionerAxeSkill_Normal:
+  Conditions:
+  - "!isowner"
+  Skills:
+  - damage{a=18} @target
+  - effect:particles{p=crit;a=10;s=0.25} @target
+
+
+# ================================
+# BOW SKILLS - OPTIMIZED
+# ================================
+
+# ❄️ Frost Bow
+Clone_FrostBowSkill:
+  Cooldown: 3
+  Conditions:
+  - "!isowner"
+  Skills:
+  - message{m="&b&l❄ &7ร่างเงาใช้ &bFrost Arrow&7!"} @owner
+  - effect:sound{s=entity.arrow.shoot;v=0.8;p=0.8} @self
+  # ลด interval และ maxduration
+  - projectile{onTick=FrostArrow_Tick;onHit=FrostArrow_Hit;type=ARROW;velocity=3;gravity=0.02;interval=2;maxduration=50} @target
+
+FrostArrow_Tick:
+  Skills:
+  # ลด particles per tick (5+2 -> 2+1)
+  - effect:particles{p=snowflake;a=2;s=0.08} @origin
+  - effect:particles{p=block{b=BLUE_ICE};a=1;s=0.08} @origin
+
+FrostArrow_Hit:
+  Conditions:
+  - "!isowner"
+  Skills:
+  - damage{a=14} @target
+  - potion{t=SLOWNESS;d=80;l=3} @target
+  # ลด particles (40 -> 20)
+  - effect:particles{p=block{b=ICE};a=20;s=0.4} @target
+  - effect:sound{s=block.glass.break;v=0.8;p=1.2} @target
+
+# 💥 Explosive Bow
+Clone_ExplosiveBowSkill:
+  Cooldown: 4
+  Conditions:
+  - "!isowner"
+  Skills:
+  - message{m="&6&l💥 &7ร่างเงาใช้ &6Explosive Arrow&7!"} @owner
+  - effect:sound{s=entity.arrow.shoot;v=0.8;p=0.6} @self
+  - projectile{onTick=ExplosiveArrow_Tick;onHit=ExplosiveArrow_Hit;type=ARROW;velocity=2.5;gravity=0.03;interval=2;maxduration=60} @target
+
+ExplosiveArrow_Tick:
+  Skills:
+  # ลด particles (3+2 -> 2+1)
+  - effect:particles{p=flame;a=2;s=0.08} @origin
+  - effect:particles{p=smoke;a=1;s=0.08} @origin
+
+ExplosiveArrow_Hit:
+  Skills:
+  # ลด particles (3 -> 2)
+  - effect:particles{p=explosion;a=2;s=0.4} @target
+  - damage{a=8} @EntitiesInRadius{r=3;types=!PLAYER}
+  - throw{velocity=0.6;velocityY=0.4} @EntitiesInRadius{r=3;types=!PLAYER}
+  - effect:sound{s=entity.generic.explode;v=0.8;p=1} @target
+
+# 🎯 Sniper Crossbow
+Clone_SniperBowSkill:
+  Cooldown: 8
+  Conditions:
+  - "!isowner"
+  Skills:
+  - message{m="&7&l🎯 &7ร่างเงาใช้ &fPiercing Shot&7!"} @owner
+  # Charge up - ลด particles (20 -> 10)
+  - effect:particles{p=crit;a=10;s=0.25} @self
+  - effect:sound{s=block.note_block.pling;v=0.4;p=0.5} @self
+  - delay 10
+  - effect:sound{s=block.note_block.pling;v=0.6;p=1} @self
+  - delay 10
+  - effect:sound{s=block.note_block.pling;v=0.8;p=1.5} @self
+  - delay 5
+  # Fire
+  - effect:sound{s=entity.arrow.shoot;v=1;p=0.5} @self
+  - projectile{onTick=SniperArrow_Tick;onHit=SniperArrow_Hit;type=ARROW;velocity=5;gravity=0;interval=2;maxduration=80} @target
+
+SniperArrow_Tick:
+  Skills:
+  # ลด particles (3 -> 1)
+  - effect:particles{p=end_rod;a=1;s=0.04} @origin
+
+SniperArrow_Hit:
+  Conditions:
+  - "!isowner"
+  Skills:
+  - damage{a=25;ignorearmor=true} @target
+  - potion{t=GLOWING;d=160} @target
+  # ลด particles (50 -> 25)
+  - effect:particles{p=crit;a=25;s=0.4} @target
+  - effect:sound{s=entity.player.attack.crit;v=0.8;p=0.8} @target
+
+
+# ================================
+# DEFAULT ATTACKS - OPTIMIZED
+# ================================
+ShadowClone_BasicAttack:
+  Cooldown: 0.8
+  Conditions:
+  - "!isowner"
+  Skills:
+  - damage{a=10} @target
+  - effect:particles{p=sweep_attack;a=1} @self
+  - effect:sound{s=entity.player.attack.sweep;v=0.6;p=1} @self

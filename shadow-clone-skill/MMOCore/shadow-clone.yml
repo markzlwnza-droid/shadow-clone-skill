@@ -1,0 +1,78 @@
+# ================================================
+# SHADOW CLONE - MMOCore Skill Configuration (FIXED)
+# ================================================
+# ใส่ไฟล์นี้ใน: plugins/MMOCore/skills/shadow-clone.yml
+
+# ชื่อและไอคอน
+name: 'Shadow Clone'
+material: WITHER_SKELETON_SKULL
+
+# คำอธิบายสกิล
+lore:
+- '&8━━━━━━━━━━━━━━━━━━━━━━━━━━━━'
+- '&7เรียก&8ร่างเงา&7ออกมาช่วยรบ'
+- '&7ร่างเงาจะ&fคัดลอก&7รูปร่างและอาวุธของคุณ'
+- ''
+- '&8▸ &7ร่างเงามี AI ฉลาด สามารถ:'
+- '  &8• &fหลบหลีก&7การโจมตี &e({dodge}% โอกาส)'
+- '  &8• &fฟันดาบ&7หรือ&fยิงธนู&7ตามอาวุธ'
+- '  &8• &fติดตาม&7และป้องกันเจ้าของ'
+- ''
+- '&8▸ &7สถิติ:'
+- '  &8• &7พลังชีวิต: &f{health}'
+- '  &8• &7ความเสียหาย: &f{damage}'
+- '  &8• &7ระยะเวลา: &e{duration} &7วินาที'
+- ''
+- '&8▸ &7ใช้งาน:'  
+- '  &8• &7มานา: &b{mana}'
+- '  &8• &7คูลดาวน์: &c{cooldown} &7วินาที'
+- '&8━━━━━━━━━━━━━━━━━━━━━━━━━━━━'
+
+# ประเภทสกิล - ใช้ MythicMobs
+type: mythicmobs
+mythicmobs-skill-id: ShadowClone_Activate
+
+# ค่าเริ่มต้น
+default:
+  cooldown: 60
+  mana: 35
+  stamina: 10
+
+# Modifiers - ปรับค่าตามเลเวล
+modifiers:
+  # โอกาสหลบ
+  dodge:
+    base: 60
+    per-level: 2
+    max: 80
+    min: 60
+  
+  # พลังชีวิตร่างเงา
+  health:
+    base: 100
+    per-level: 15
+    max: 250
+    
+  # ความเสียหาย
+  damage:
+    base: 10
+    per-level: 3
+    max: 40
+    
+  # ระยะเวลา (วินาที)
+  duration:
+    base: 20
+    per-level: 2
+    max: 40
+    
+  # มานาที่ใช้
+  mana:
+    base: 35
+    per-level: -1
+    min: 20
+    
+  # คูลดาวน์
+  cooldown:
+    base: 60
+    per-level: -2
+    min: 30

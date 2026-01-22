@@ -1,0 +1,198 @@
+# ================================================
+# SHADOW CLONE SKILLS - Basic Version (No Model/Animation)
+# ================================================
+# ใส่ไฟล์นี้ใน: plugins/MythicMobs/Skills/ShadowCloneSkills.yml
+# Version: Basic 1.0 - ทดสอบก่อนใส่ Model
+# Required: MythicMobs 5.3+ (Free หรือ Premium)
+
+# ================================
+# MAIN ACTIVATION SKILL
+# ================================
+ShadowClone_Activate:
+  Cooldown: 60
+  Skills:
+  - message{m="&8&l⚔ &7เรียก&8ร่างเงา&7ออกมาช่วยรบ!"} @self
+  - effect:sound{s=entity.enderman.teleport;v=1;p=0.4} @self
+  - effect:particles{p=large_smoke;a=40;s=0.6} @self
+  - effect:particles{p=portal;a=50;s=0.8} @self
+  - delay 5
+  - skill{s=ShadowClone_SummonSmart} @self
+
+# ตรวจสอบอาวุธ
+ShadowClone_SummonSmart:
+  Skills:
+  - setvariable{var=scope.caster.clone_spawned;val=0;type=INTEGER}
+  # Bows
+  - skill{s=ShadowClone_SpawnArcher} @self ?wearing{slot=hand;m=BOW} ?varequals{var=scope.caster.clone_spawned;val=0}
+  - skill{s=ShadowClone_SpawnArcher} @self ?wearing{slot=hand;m=CROSSBOW} ?varequals{var=scope.caster.clone_spawned;val=0}
+  # Swords
+  - skill{s=ShadowClone_SpawnMelee} @self ?wearing{slot=hand;m=DIAMOND_SWORD} ?varequals{var=scope.caster.clone_spawned;val=0}
+  - skill{s=ShadowClone_SpawnMelee} @self ?wearing{slot=hand;m=NETHERITE_SWORD} ?varequals{var=scope.caster.clone_spawned;val=0}
+  - skill{s=ShadowClone_SpawnMelee} @self ?wearing{slot=hand;m=IRON_SWORD} ?varequals{var=scope.caster.clone_spawned;val=0}
+  # Axes
+  - skill{s=ShadowClone_SpawnMelee} @self ?wearing{slot=hand;m=DIAMOND_AXE} ?varequals{var=scope.caster.clone_spawned;val=0}
+  - skill{s=ShadowClone_SpawnMelee} @self ?wearing{slot=hand;m=NETHERITE_AXE} ?varequals{var=scope.caster.clone_spawned;val=0}
+  # Default
+  - skill{s=ShadowClone_SpawnDefault} @self ?varequals{var=scope.caster.clone_spawned;val=0}
+
+ShadowClone_SpawnArcher:
+  Skills:
+  - summon{t=ShadowClone_Archer;a=1;r=2} @self
+  - setvariable{var=scope.caster.clone_spawned;val=1;type=INTEGER}
+
+ShadowClone_SpawnMelee:
+  Skills:
+  - summon{t=ShadowClone_Melee;a=1;r=2} @self
+  - setvariable{var=scope.caster.clone_spawned;val=1;type=INTEGER}
+
+ShadowClone_SpawnDefault:
+  Skills:
+  - summon{t=ShadowClone;a=1;r=2} @self
+  - setvariable{var=scope.caster.clone_spawned;val=1;type=INTEGER}
+
+
+# ================================
+# SPAWN EFFECTS (Basic - No Disguise)
+# ================================
+ShadowClone_Spawn:
+  Skills:
+  # Owner tracking
+  - setvariable{var=mob.owner_uuid;val=<caster.uuid>;type=STRING} @self
+  - setvariable{var=mob.owner_name;val=<caster.name>;type=STRING} @self
+  # Effects only (no disguise for basic test)
+  - effect:particles{p=large_smoke;a=30;s=0.4} @self
+  - effect:particles{p=portal;a=40;s=0.6} @self
+  - effect:sound{s=entity.enderman.teleport;v=0.8;p=0.6} @self
+  - delay 5
+  - message{m="&8&l⚔ &7ร่างเงาพร้อมรบ!"} @owner
+  # Despawn timer (20 seconds = 400 ticks)
+  - skill{s=ShadowClone_SetDespawnTimer} @self
+
+ShadowClone_SetDespawnTimer:
+  Skills:
+  - delay 400
+  - skill{s=ShadowClone_Expire} @self
+
+
+# ================================
+# DODGE SYSTEM
+# ================================
+ShadowClone_Dodge:
+  Cooldown: 0.5
+  Skills:
+  - cancelevent
+  - effect:particles{p=large_smoke;a=15;s=0.2} @self
+  - effect:sound{s=entity.enderman.teleport;v=0.6;p=1.5} @self
+  - velocity{m=set;x=0;y=0.3;z=-0.6;relative=true} @self
+  - effect:particles{p=crit;a=8;s=0.2} @self
+  - actionmessage{m="&8&l✦ DODGE!"} @owner
+
+ShadowClone_Backflip:
+  Cooldown: 1
+  Skills:
+  - cancelevent
+  - effect:particles{p=large_smoke;a=20;s=0.3} @self
+  - effect:sound{s=entity.enderman.teleport;v=0.7;p=1.2} @self
+  - velocity{m=set;x=0;y=0.5;z=-0.8;relative=true} @self
+  - delay 10
+  - skill{s=ShadowClone_ArrowShot} @target ?!isowner
+
+ShadowClone_Block:
+  Cooldown: 0.5
+  Skills:
+  - cancelevent
+  - effect:sound{s=item.shield.block;v=0.8;p=1} @self
+  - effect:particles{p=crit;a=5;s=0.15} @self
+  - actionmessage{m="&7&l🛡 BLOCK!"} @owner
+
+
+# ================================
+# SMART ATTACK
+# ================================
+ShadowClone_SmartAttack:
+  Cooldown: 0.5
+  Conditions:
+  - "!isowner"
+  Skills:
+  - skill{s=ShadowClone_ArrowShot} @target ?distance{d=>8}
+  - skill{s=ShadowClone_MeleeCombo} @target ?distance{d=<8}
+
+
+# ================================
+# MELEE COMBAT
+# ================================
+ShadowClone_MeleeCombo:
+  Cooldown: 0.8
+  Conditions:
+  - "!isowner"
+  Skills:
+  - damage{a=8;pkb=true} @target
+  - effect:particles{p=sweep_attack;a=1} @self
+  - effect:sound{s=entity.player.attack.sweep;v=0.7;p=1} @self
+  - delay 8
+  - skill{s=ShadowClone_HeavySlash} @target 0.3
+
+ShadowClone_HeavySlash:
+  Skills:
+  - effect:particles{p=crit;a=15;s=0.25} @target
+  - effect:sound{s=entity.player.attack.crit;v=0.8;p=0.8} @self
+  - damage{a=15;pkb=true} @target
+  - throw{v=0.4;vy=0.25} @target
+
+
+# ================================
+# RANGED COMBAT
+# ================================
+ShadowClone_ArrowShot:
+  Cooldown: 1
+  Conditions:
+  - "!isowner"
+  Skills:
+  - effect:sound{s=entity.arrow.shoot;v=0.8;p=1} @self
+  - projectile{onTick=ShadowClone_ArrowTick;onHit=ShadowClone_ArrowHit;type=ARROW;velocity=2.8;interval=2;maxduration=40;gravity=0.05} @target
+
+ShadowClone_ArrowTick:
+  Skills:
+  - effect:particles{p=crit;a=1;s=0.08} @origin
+
+ShadowClone_ArrowHit:
+  Conditions:
+  - "!isowner"
+  Skills:
+  - damage{a=10} @target
+  - effect:particles{p=crit;a=8;s=0.25} @target
+  - effect:sound{s=entity.arrow.hit_player;v=0.8;p=1} @target
+
+
+# ================================
+# FOLLOW OWNER
+# ================================
+ShadowClone_FollowOwner:
+  Cooldown: 2
+  TargetConditions:
+  - distance{d=>12} @owner
+  Skills:
+  - effect:particles{p=portal;a=10;s=0.25} @self
+  - delay 2
+  - teleport @owner
+  - effect:particles{p=large_smoke;a=12;s=0.3} @self
+
+
+# ================================
+# EXPIRE & DEATH
+# ================================
+ShadowClone_Expire:
+  Skills:
+  - message{m="&8&l⚔ &7ร่างเงา&8หายไป&7ในความมืด..."} @owner
+  - effect:particles{p=large_smoke;a=50;s=0.6} @self
+  - effect:particles{p=portal;a=30;s=0.4} @self
+  - effect:sound{s=entity.enderman.teleport;v=0.8;p=0.3} @self
+  - delay 3
+  - remove @self
+
+ShadowClone_Death:
+  Skills:
+  - message{m="&8&l⚔ &cร่างเงาถูกทำลาย!"} @owner
+  - effect:particles{p=large_smoke;a=60;s=0.8} @self
+  - effect:particles{p=soul;a=15;s=0.4} @self
+  - effect:sound{s=entity.wither.hurt;v=0.6;p=1.5} @self

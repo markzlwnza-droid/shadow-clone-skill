@@ -1,0 +1,154 @@
+# ================================
+# SHADOW CLONE MOB - Basic Version (No Model/Animation)
+# ================================
+# ใส่ไฟล์นี้ใน: plugins/MythicMobs/Mobs/ShadowClone.yml
+# Version: Basic 1.0 - ทดสอบก่อนใส่ Model
+# Required: MythicMobs 5.3+ (Free หรือ Premium)
+
+ShadowClone:
+  Type: ZOMBIE
+  Display: '&8Shadow Clone'
+  Health: 100
+  Damage: 10
+  Faction: ShadowClones
+  
+  Options:
+    Silent: true
+    NoAI: false
+    MovementSpeed: 0.38
+    FollowRange: 25
+    PreventOtherDrops: true
+    PreventItemPickup: true
+    PreventSunburn: true
+    PreventMobKillDrops: true
+    AlwaysShowName: false
+    NoDamageTicks: 10
+    Despawn: false
+    Persistent: false
+    
+  Equipment:
+  - AIR HEAD
+  - AIR CHEST
+  - AIR LEGS
+  - AIR FEET
+  - AIR HAND
+  - AIR OFFHAND
+  
+  AIGoalSelectors:
+  - clear
+  - float 0
+  - meleeattack 1
+  - bowshoot 2
+  - movetowardstarget 3
+  
+  AITargetSelectors:
+  - clear
+  - attacker 0
+  - otherfactionmonsters 1
+  
+  Skills:
+  - skill{s=ShadowClone_Spawn} @self ~onSpawn
+  - skill{s=ShadowClone_SmartAttack;sync=true} @target ~onAttack ?!isowner
+  - skill{s=ShadowClone_Dodge} @self ~onDamaged 0.6
+  - skill{s=ShadowClone_FollowOwner} @self ~onTimer:100
+  - skill{s=ShadowClone_Death} @self ~onDeath
+
+
+# ================================
+# MELEE SHADOW CLONE
+# ================================
+ShadowClone_Melee:
+  Type: ZOMBIE
+  Display: '&8Shadow Clone'
+  Health: 100
+  Damage: 12
+  Faction: ShadowClones
+  
+  Options:
+    Silent: true
+    NoAI: false
+    MovementSpeed: 0.40
+    FollowRange: 15
+    PreventOtherDrops: true
+    PreventItemPickup: true
+    PreventSunburn: true
+    NoDamageTicks: 10
+    Despawn: false
+    Persistent: false
+    
+  Equipment:
+  - AIR HEAD
+  - AIR CHEST
+  - AIR LEGS
+  - AIR FEET
+  - DIAMOND_SWORD HAND
+  - SHIELD OFFHAND
+  
+  AIGoalSelectors:
+  - clear
+  - float 0
+  - meleeattack 1
+  - movetowardstarget 2
+  
+  AITargetSelectors:
+  - clear
+  - attacker 0
+  - otherfactionmonsters 1
+  
+  Skills:
+  - skill{s=ShadowClone_Spawn} @self ~onSpawn
+  - skill{s=ShadowClone_MeleeCombo;sync=true} @target ~onAttack ?!isowner
+  - skill{s=ShadowClone_Dodge} @self ~onDamaged 0.6
+  - skill{s=ShadowClone_Block} @self ~onDamaged 0.3
+  - skill{s=ShadowClone_FollowOwner} @self ~onTimer:100
+  - skill{s=ShadowClone_Death} @self ~onDeath
+
+
+# ================================
+# ARCHER SHADOW CLONE
+# ================================
+ShadowClone_Archer:
+  Type: SKELETON
+  Display: '&8Shadow Clone'
+  Health: 80
+  Damage: 8
+  Faction: ShadowClones
+  
+  Options:
+    Silent: true
+    NoAI: false
+    MovementSpeed: 0.35
+    FollowRange: 25
+    PreventOtherDrops: true
+    PreventItemPickup: true
+    PreventSunburn: true
+    NoDamageTicks: 10
+    Despawn: false
+    Persistent: false
+    
+  Equipment:
+  - AIR HEAD
+  - AIR CHEST
+  - AIR LEGS
+  - AIR FEET
+  - BOW HAND
+  - AIR OFFHAND
+  
+  AIGoalSelectors:
+  - clear
+  - float 0
+  - bowshoot 1
+  - movetowardstarget 2
+  
+  AITargetSelectors:
+  - clear
+  - attacker 0
+  - otherfactionmonsters 1
+  
+  Skills:
+  - skill{s=ShadowClone_Spawn} @self ~onSpawn
+  - skill{s=ShadowClone_ArrowShot;sync=true} @target ~onAttack ?!isowner
+  - skill{s=ShadowClone_Dodge} @self ~onDamaged 0.6
+  - skill{s=ShadowClone_Backflip} @self ~onDamaged 0.4
+  - skill{s=ShadowClone_FollowOwner} @self ~onTimer:120
+  - skill{s=ShadowClone_Death} @self ~onDeath
