@@ -1,0 +1,253 @@
+# ================================================
+# SHADOW CLONE - GEM SYSTEM (ExecutableItems Premium)
+# ================================================
+# ใส่ไฟล์นี้ใน: plugins/ExecutableItems/items/shadow_gems.yml
+# Version: 1.0 - Gem System for Shadow Clone
+# Required: ExecutableItems Premium 6.0+
+
+# ================================
+# POWER GEMS - เพิ่มพลังโจมตี Clone
+# ================================
+
+shadow_power_gem_1:
+  material: AMETHYST_SHARD
+  name: "&c✦ Power Gem I"
+  lore:
+  - "&8━━━━━━━━━━━━━━━━━━━━━"
+  - "&7เพิ่มพลังโจมตีให้ร่างเงา"
+  - ""
+  - "&c⚔ &7Clone Damage: &a+10%"
+  - ""
+  - "&eใส่ไว้ใน Inventory เพื่อใช้งาน"
+  - "&8━━━━━━━━━━━━━━━━━━━━━"
+  glow: true
+  unbreakable: false
+  
+  # Variable เก็บค่า buff
+  variables:
+    clone_damage_bonus:
+      default: 1.1
+      type: DOUBLE
+  
+  activators:
+    # เมื่อมีไว้ใน Inventory
+    passive_buff:
+      name: "&aPassive Power Buff"
+      activator: LOOP
+      delay: 20
+      commands:
+      - "SENDMESSAGE &8[&cPower Gem&8] &7Active..."
+      silenceOutput: true
+      # ส่งค่าไปให้ MythicMobs
+      runMythicMobsSkill:
+        skill: "Clone_ApplyDamageBuff"
+        castAtSelf: true
+
+shadow_power_gem_2:
+  material: AMETHYST_SHARD
+  name: "&c✦ Power Gem II"
+  lore:
+  - "&8━━━━━━━━━━━━━━━━━━━━━"
+  - "&7เพิ่มพลังโจมตีให้ร่างเงา"
+  - ""
+  - "&c⚔ &7Clone Damage: &a+25%"
+  - ""
+  - "&eใส่ไว้ใน Inventory เพื่อใช้งาน"
+  - "&8━━━━━━━━━━━━━━━━━━━━━"
+  glow: true
+  enchantments:
+    DURABILITY: 1
+  hideEnchantments: true
+  
+  variables:
+    clone_damage_bonus:
+      default: 1.25
+      type: DOUBLE
+
+shadow_power_gem_3:
+  material: ECHO_SHARD
+  name: "&4✦ Power Gem III &8[&cMAX&8]"
+  lore:
+  - "&8━━━━━━━━━━━━━━━━━━━━━"
+  - "&7เพิ่มพลังโจมตีให้ร่างเงา"
+  - ""
+  - "&c⚔ &7Clone Damage: &a+50%"
+  - "&4☠ &7Bonus Crit Chance: &a+15%"
+  - ""
+  - "&6✦ &eMAXIMUM TIER"
+  - "&eใส่ไว้ใน Inventory เพื่อใช้งาน"
+  - "&8━━━━━━━━━━━━━━━━━━━━━"
+  glow: true
+  enchantments:
+    DURABILITY: 1
+  hideEnchantments: true
+  
+  variables:
+    clone_damage_bonus:
+      default: 1.5
+      type: DOUBLE
+    clone_crit_bonus:
+      default: 0.15
+      type: DOUBLE
+
+
+# ================================
+# VITALITY GEMS - เพิ่ม HP Clone
+# ================================
+
+shadow_vitality_gem_1:
+  material: EMERALD
+  name: "&a✦ Vitality Gem I"
+  lore:
+  - "&8━━━━━━━━━━━━━━━━━━━━━"
+  - "&7เพิ่มพลังชีวิตให้ร่างเงา"
+  - ""
+  - "&a♥ &7Clone Health: &a+20 HP"
+  - ""
+  - "&eใส่ไว้ใน Inventory เพื่อใช้งาน"
+  - "&8━━━━━━━━━━━━━━━━━━━━━"
+  glow: true
+  
+  variables:
+    clone_health_bonus:
+      default: 20
+      type: DOUBLE
+
+shadow_vitality_gem_2:
+  material: EMERALD
+  name: "&a✦ Vitality Gem II"
+  lore:
+  - "&8━━━━━━━━━━━━━━━━━━━━━"
+  - "&7เพิ่มพลังชีวิตให้ร่างเงา"
+  - ""
+  - "&a♥ &7Clone Health: &a+50 HP"
+  - ""
+  - "&eใส่ไว้ใน Inventory เพื่อใช้งาน"
+  - "&8━━━━━━━━━━━━━━━━━━━━━"
+  glow: true
+  enchantments:
+    DURABILITY: 1
+  hideEnchantments: true
+  
+  variables:
+    clone_health_bonus:
+      default: 50
+      type: DOUBLE
+
+shadow_vitality_gem_3:
+  material: HEART_OF_THE_SEA
+  name: "&2✦ Vitality Gem III &8[&aMAX&8]"
+  lore:
+  - "&8━━━━━━━━━━━━━━━━━━━━━"
+  - "&7เพิ่มพลังชีวิตให้ร่างเงา"
+  - ""
+  - "&a♥ &7Clone Health: &a+100 HP"
+  - "&2♻ &7Clone Regen: &a+2 HP/s"
+  - ""
+  - "&6✦ &eMAXIMUM TIER"
+  - "&eใส่ไว้ใน Inventory เพื่อใช้งาน"
+  - "&8━━━━━━━━━━━━━━━━━━━━━"
+  glow: true
+  
+  variables:
+    clone_health_bonus:
+      default: 100
+      type: DOUBLE
+    clone_regen_bonus:
+      default: 2
+      type: DOUBLE
+
+
+# ================================
+# AGILITY GEMS - เพิ่ม Dodge Clone
+# ================================
+
+shadow_agility_gem_1:
+  material: PRISMARINE_SHARD
+  name: "&b✦ Agility Gem I"
+  lore:
+  - "&8━━━━━━━━━━━━━━━━━━━━━"
+  - "&7เพิ่มความคล่องตัวให้ร่างเงา"
+  - ""
+  - "&b◇ &7Clone Dodge: &a+5%"
+  - ""
+  - "&eใส่ไว้ใน Inventory เพื่อใช้งาน"
+  - "&8━━━━━━━━━━━━━━━━━━━━━"
+  glow: true
+  
+  variables:
+    clone_dodge_bonus:
+      default: 0.05
+      type: DOUBLE
+
+shadow_agility_gem_2:
+  material: PRISMARINE_SHARD
+  name: "&b✦ Agility Gem II"
+  lore:
+  - "&8━━━━━━━━━━━━━━━━━━━━━"
+  - "&7เพิ่มความคล่องตัวให้ร่างเงา"
+  - ""
+  - "&b◇ &7Clone Dodge: &a+10%"
+  - ""
+  - "&eใส่ไว้ใน Inventory เพื่อใช้งาน"
+  - "&8━━━━━━━━━━━━━━━━━━━━━"
+  glow: true
+  enchantments:
+    DURABILITY: 1
+  hideEnchantments: true
+  
+  variables:
+    clone_dodge_bonus:
+      default: 0.10
+      type: DOUBLE
+
+shadow_agility_gem_3:
+  material: NETHER_STAR
+  name: "&3✦ Agility Gem III &8[&bMAX&8]"
+  lore:
+  - "&8━━━━━━━━━━━━━━━━━━━━━"
+  - "&7เพิ่มความคล่องตัวให้ร่างเงา"
+  - ""
+  - "&b◇ &7Clone Dodge: &a+20%"
+  - "&3⚡ &7Clone Speed: &a+15%"
+  - ""
+  - "&6✦ &eMAXIMUM TIER"
+  - "&eใส่ไว้ใน Inventory เพื่อใช้งาน"
+  - "&8━━━━━━━━━━━━━━━━━━━━━"
+  glow: true
+  
+  variables:
+    clone_dodge_bonus:
+      default: 0.20
+      type: DOUBLE
+    clone_speed_bonus:
+      default: 0.15
+      type: DOUBLE
+
+
+# ================================
+# ULTIMATE GEM - เพิ่ม Ultimate Charge
+# ================================
+
+shadow_ultimate_gem:
+  material: END_CRYSTAL
+  name: "&5✦ Ultimate Gem"
+  lore:
+  - "&8━━━━━━━━━━━━━━━━━━━━━"
+  - "&7เพิ่มความเร็ว Ultimate Charge"
+  - ""
+  - "&5⚡ &7Ultimate Charge Rate: &ax2"
+  - "&d✦ &7Ultimate Damage: &a+30%"
+  - ""
+  - "&6✦ &eLEGENDARY"
+  - "&eใส่ไว้ใน Inventory เพื่อใช้งาน"
+  - "&8━━━━━━━━━━━━━━━━━━━━━"
+  glow: true
+  
+  variables:
+    clone_ult_charge_rate:
+      default: 2.0
+      type: DOUBLE
+    clone_ult_damage_bonus:
+      default: 1.3
+      type: DOUBLE

@@ -1,0 +1,244 @@
+# ================================================
+# SHADOW CLONE - TALISMAN SYSTEM (ExecutableItems Premium)
+# ================================================
+# ใส่ไฟล์นี้ใน: plugins/ExecutableItems/items/shadow_talismans.yml
+# Version: 1.0 - Talismans for Shadow Clone
+# Required: ExecutableItems Premium 6.0+
+
+# ================================
+# OFFENSIVE TALISMANS
+# ================================
+
+talisman_berserker:
+  material: NETHERITE_SCRAP
+  name: "&4🔥 Berserker Talisman"
+  lore:
+  - "&8━━━━━━━━━━━━━━━━━━━━━"
+  - "&7เครื่องรางแห่งนักรบคลั่ง"
+  - ""
+  - "&c⚔ &7Clone Damage: &a+40%"
+  - "&4☠ &7Clone LifeSteal: &a+10%"
+  - "&c💔 &7Clone Max HP: &c-20%"
+  - ""
+  - "&6✦ &eLEGENDARY TALISMAN"
+  - "&eใส่ไว้ใน Inventory เพื่อใช้งาน"
+  - "&8━━━━━━━━━━━━━━━━━━━━━"
+  glow: true
+  
+  variables:
+    clone_damage_bonus:
+      default: 1.4
+      type: DOUBLE
+    clone_lifesteal:
+      default: 0.1
+      type: DOUBLE
+    clone_health_penalty:
+      default: 0.8
+      type: DOUBLE
+  
+  activators:
+    on_clone_attack:
+      name: "&cLifeSteal Heal"
+      activator: PLAYER_HIT_ENTITY
+      commands:
+      - "SENDMESSAGE &4&l♥ &7LifeSteal!"
+      silenceOutput: true
+
+talisman_assassin:
+  material: PHANTOM_MEMBRANE
+  name: "&8🗡 Assassin Talisman"
+  lore:
+  - "&8━━━━━━━━━━━━━━━━━━━━━"
+  - "&7เครื่องรางแห่งนักฆ่า"
+  - ""
+  - "&8☠ &7Clone Crit Chance: &a+25%"
+  - "&c⚔ &7Clone Crit Damage: &a+50%"
+  - "&8◇ &7Clone First Hit: &ax2 Damage"
+  - ""
+  - "&6✦ &eLEGENDARY TALISMAN"
+  - "&eใส่ไว้ใน Inventory เพื่อใช้งาน"
+  - "&8━━━━━━━━━━━━━━━━━━━━━"
+  glow: true
+  
+  variables:
+    clone_crit_chance:
+      default: 0.25
+      type: DOUBLE
+    clone_crit_damage:
+      default: 1.5
+      type: DOUBLE
+    clone_first_hit_bonus:
+      default: 2.0
+      type: DOUBLE
+
+
+# ================================
+# DEFENSIVE TALISMANS
+# ================================
+
+talisman_guardian:
+  material: TOTEM_OF_UNDYING
+  name: "&a🛡 Guardian Talisman"
+  lore:
+  - "&8━━━━━━━━━━━━━━━━━━━━━"
+  - "&7เครื่องรางแห่งผู้พิทักษ์"
+  - ""
+  - "&a♥ &7Clone Max HP: &a+50%"
+  - "&b◇ &7Clone Dodge: &a+15%"
+  - "&e🛡 &7Clone Block Chance: &a+20%"
+  - ""
+  - "&6✦ &eLEGENDARY TALISMAN"
+  - "&eใส่ไว้ใน Inventory เพื่อใช้งาน"
+  - "&8━━━━━━━━━━━━━━━━━━━━━"
+  glow: true
+  
+  variables:
+    clone_health_bonus:
+      default: 1.5
+      type: DOUBLE
+    clone_dodge_bonus:
+      default: 0.15
+      type: DOUBLE
+    clone_block_bonus:
+      default: 0.2
+      type: DOUBLE
+
+talisman_immortal:
+  material: NETHER_STAR
+  name: "&e✦ Immortal Talisman"
+  lore:
+  - "&8━━━━━━━━━━━━━━━━━━━━━"
+  - "&7เครื่องรางแห่งความเป็นอมตะ"
+  - ""
+  - "&e✦ &7Clone ไม่ตายทันที"
+  - "&a♻ &7Clone Revive: &a1 ครั้ง"
+  - "&a♥ &7Revive HP: &a50%"
+  - ""
+  - "&d✦ &5MYTHIC TALISMAN"
+  - "&eใส่ไว้ใน Inventory เพื่อใช้งาน"
+  - "&8━━━━━━━━━━━━━━━━━━━━━"
+  glow: true
+  
+  variables:
+    clone_revive_count:
+      default: 1
+      type: INTEGER
+    clone_revive_hp:
+      default: 0.5
+      type: DOUBLE
+
+
+# ================================
+# SUPPORT TALISMANS
+# ================================
+
+talisman_healer:
+  material: GLISTERING_MELON_SLICE
+  name: "&a💚 Healer Talisman"
+  lore:
+  - "&8━━━━━━━━━━━━━━━━━━━━━"
+  - "&7เครื่องรางแห่งการรักษา"
+  - ""
+  - "&a💚 &7Clone Heal Owner: &a+50%"
+  - "&a♻ &7Clone Regen: &a+5 HP/s"
+  - "&e✦ &7Support Mode Buff: &a+25%"
+  - ""
+  - "&6✦ &eLEGENDARY TALISMAN"
+  - "&eใส่ไว้ใน Inventory เพื่อใช้งาน"
+  - "&8━━━━━━━━━━━━━━━━━━━━━"
+  glow: true
+  
+  variables:
+    clone_heal_bonus:
+      default: 1.5
+      type: DOUBLE
+    clone_regen_bonus:
+      default: 5
+      type: DOUBLE
+    clone_support_buff:
+      default: 1.25
+      type: DOUBLE
+
+talisman_bond:
+  material: CHAIN
+  name: "&d💕 Bond Talisman"
+  lore:
+  - "&8━━━━━━━━━━━━━━━━━━━━━"
+  - "&7เครื่องรางแห่งสายสัมพันธ์"
+  - ""
+  - "&d💕 &7เมื่อ Clone โจมตี:"
+  - "   &7→ Owner ได้รับ &a+5% HP"
+  - "&d💕 &7เมื่อ Owner โจมตี:"
+  - "   &7→ Clone โจมตีด้วย &a(Sync)"
+  - ""
+  - "&d✦ &5MYTHIC TALISMAN"
+  - "&eใส่ไว้ใน Inventory เพื่อใช้งาน"
+  - "&8━━━━━━━━━━━━━━━━━━━━━"
+  glow: true
+  
+  variables:
+    clone_sync_enabled:
+      default: 1
+      type: INTEGER
+    clone_bond_heal:
+      default: 0.05
+      type: DOUBLE
+
+
+# ================================
+# ULTIMATE TALISMANS
+# ================================
+
+talisman_shadow_master:
+  material: DRAGON_EGG
+  name: "&8✦ Shadow Master Talisman"
+  lore:
+  - "&8━━━━━━━━━━━━━━━━━━━━━"
+  - "&7เครื่องรางแห่งจ้าวแห่งเงา"
+  - ""
+  - "&5⚡ &7Ultimate Charge: &ax3"
+  - "&5✦ &7Ultimate Damage: &a+100%"
+  - "&5◆ &7Ultimate Cooldown: &a-50%"
+  - "&8☠ &7Clone Duration: &a+10s"
+  - ""
+  - "&5✦ &8SHADOW ARTIFACT"
+  - "&eใส่ไว้ใน Inventory เพื่อใช้งาน"
+  - "&8━━━━━━━━━━━━━━━━━━━━━"
+  glow: true
+  
+  variables:
+    clone_ult_charge_rate:
+      default: 3.0
+      type: DOUBLE
+    clone_ult_damage_bonus:
+      default: 2.0
+      type: DOUBLE
+    clone_ult_cd_reduction:
+      default: 0.5
+      type: DOUBLE
+    clone_duration_bonus:
+      default: 10
+      type: INTEGER
+
+talisman_duality:
+  material: END_CRYSTAL
+  name: "&b✦ Duality Talisman"
+  lore:
+  - "&8━━━━━━━━━━━━━━━━━━━━━"
+  - "&7เครื่องรางแห่งความเป็นสอง"
+  - ""
+  - "&b✦ &7Summon Clone: &a2 ตัว!"
+  - "&7(แต่ละตัว Stats &c-30%&7)"
+  - ""
+  - "&5✦ &8SHADOW ARTIFACT"
+  - "&eใส่ไว้ใน Inventory เพื่อใช้งาน"
+  - "&8━━━━━━━━━━━━━━━━━━━━━"
+  glow: true
+  
+  variables:
+    clone_count:
+      default: 2
+      type: INTEGER
+    clone_stats_penalty:
+      default: 0.7
+      type: DOUBLE
