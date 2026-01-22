@@ -1,8 +1,8 @@
 # ================================
-# SHADOW CLONE MOB - Basic Version (No Model/Animation)
+# SHADOW CLONE MOB - Bug Fixed Version
 # ================================
 # ใส่ไฟล์นี้ใน: plugins/MythicMobs/Mobs/ShadowClone.yml
-# Version: Basic 1.0 - ทดสอบก่อนใส่ Model
+# Version: 1.5 - Bug Fixed
 # Required: MythicMobs 5.3+ (Free หรือ Premium)
 
 ShadowClone:
@@ -46,11 +46,14 @@ ShadowClone:
   - attacker 0
   - otherfactionmonsters 1
   
+  # Skills
   Skills:
   - skill{s=ShadowClone_Spawn} @self ~onSpawn
   - skill{s=ShadowClone_SmartAttack;sync=true} @target ~onAttack ?!isowner
   - skill{s=ShadowClone_Dodge} @self ~onDamaged 0.6
   - skill{s=ShadowClone_FollowOwner} @self ~onTimer:100
+  # ตรวจสอบว่า Owner ยังออนไลน์อยู่ไหม (ทุก 2 วินาที)
+  - skill{s=ShadowClone_CheckOwnerOnline} @self ~onTimer:40
   - skill{s=ShadowClone_Death} @self ~onDeath
 
 
@@ -95,12 +98,18 @@ ShadowClone_Melee:
   - attacker 0
   - otherfactionmonsters 1
   
+  # Skills - ปรับ chance: Dodge 50%, Parry 25%, Block 25%
   Skills:
   - skill{s=ShadowClone_Spawn} @self ~onSpawn
   - skill{s=ShadowClone_MeleeCombo;sync=true} @target ~onAttack ?!isowner
-  - skill{s=ShadowClone_Dodge} @self ~onDamaged 0.6
-  - skill{s=ShadowClone_Block} @self ~onDamaged 0.3
+  # 50% Dodge (หลบ ซ้าย/ขวา/หลัง)
+  - skill{s=ShadowClone_Dodge} @self ~onDamaged 0.5
+  # 25% Parry (บล็อก + โต้กลับ)
+  - skill{s=ShadowClone_Parry} @self ~onDamaged 0.25
+  # 25% Block ธรรมดา
+  - skill{s=ShadowClone_Block} @self ~onDamaged 0.25
   - skill{s=ShadowClone_FollowOwner} @self ~onTimer:100
+  - skill{s=ShadowClone_CheckOwnerOnline} @self ~onTimer:40
   - skill{s=ShadowClone_Death} @self ~onDeath
 
 
@@ -145,10 +154,14 @@ ShadowClone_Archer:
   - attacker 0
   - otherfactionmonsters 1
   
+  # Skills - ปรับ chance: Dodge 50%, Backflip 50%
   Skills:
   - skill{s=ShadowClone_Spawn} @self ~onSpawn
   - skill{s=ShadowClone_ArrowShot;sync=true} @target ~onAttack ?!isowner
-  - skill{s=ShadowClone_Dodge} @self ~onDamaged 0.6
-  - skill{s=ShadowClone_Backflip} @self ~onDamaged 0.4
+  # 50% Dodge (หลบ ซ้าย/ขวา/หลัง)
+  - skill{s=ShadowClone_Dodge} @self ~onDamaged 0.5
+  # 50% Backflip (กระโดดถอยหลัง + ยิง)
+  - skill{s=ShadowClone_Backflip} @self ~onDamaged 0.5
   - skill{s=ShadowClone_FollowOwner} @self ~onTimer:120
+  - skill{s=ShadowClone_CheckOwnerOnline} @self ~onTimer:40
   - skill{s=ShadowClone_Death} @self ~onDeath

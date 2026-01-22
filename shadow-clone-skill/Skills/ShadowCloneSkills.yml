@@ -1,8 +1,8 @@
 # ================================================
-# SHADOW CLONE SKILLS - Basic Version (No Model/Animation)
+# SHADOW CLONE SKILLS - Advanced AI Dodge System (Bug Fixed)
 # ================================================
 # ใส่ไฟล์นี้ใน: plugins/MythicMobs/Skills/ShadowCloneSkills.yml
-# Version: Basic 1.0 - ทดสอบก่อนใส่ Model
+# Version: 1.5 - Smart Directional Dodge (Fixed)
 # Required: MythicMobs 5.3+ (Free หรือ Premium)
 
 # ================================
@@ -52,14 +52,21 @@ ShadowClone_SpawnDefault:
 
 
 # ================================
-# SPAWN EFFECTS (Basic - No Disguise)
+# SPAWN EFFECTS
 # ================================
 ShadowClone_Spawn:
   Skills:
   # Owner tracking
   - setvariable{var=mob.owner_uuid;val=<caster.uuid>;type=STRING} @self
   - setvariable{var=mob.owner_name;val=<caster.name>;type=STRING} @self
-  # Effects only (no disguise for basic test)
+  
+  # ========================================
+  # DISGUISE - Copy Player Appearance
+  # ต้องลง LibsDisguises plugin!
+  # ========================================
+  - disguise{d="player <caster.name>"} @self
+  
+  # Effects
   - effect:particles{p=large_smoke;a=30;s=0.4} @self
   - effect:particles{p=portal;a=40;s=0.6} @self
   - effect:sound{s=entity.enderman.teleport;v=0.8;p=0.6} @self
@@ -75,35 +82,100 @@ ShadowClone_SetDespawnTimer:
 
 
 # ================================
-# DODGE SYSTEM
+# SMART DODGE SYSTEM - AI ฉลาด! (FIXED)
 # ================================
+# Main Dodge - สุ่มทิศทางหลบ (ใช้ randomskill แทน)
 ShadowClone_Dodge:
   Cooldown: 0.5
   Skills:
   - cancelevent
-  - effect:particles{p=large_smoke;a=15;s=0.2} @self
-  - effect:sound{s=entity.enderman.teleport;v=0.6;p=1.5} @self
-  - velocity{m=set;x=0;y=0.3;z=-0.6;relative=true} @self
-  - effect:particles{p=crit;a=8;s=0.2} @self
-  - actionmessage{m="&8&l✦ DODGE!"} @owner
+  # ใช้ randomskill เพื่อเลือกทิศทางเดียว
+  - randomskill{skills=ShadowClone_DodgeLeft,ShadowClone_DodgeRight,ShadowClone_DodgeBack}
 
+# หลบซ้าย - Side Step Left
+ShadowClone_DodgeLeft:
+  Skills:
+  - effect:particles{p=large_smoke;a=12;s=0.2} @self
+  - effect:sound{s=entity.enderman.teleport;v=0.5;p=1.6} @self
+  - velocity{m=set;x=-0.7;y=0.2;z=0;relative=true} @self
+  - effect:particles{p=crit;a=6;s=0.15} @self
+  - actionmessage{m="&b&l◀ DODGE LEFT!"} @owner
+
+# หลบขวา - Side Step Right
+ShadowClone_DodgeRight:
+  Skills:
+  - effect:particles{p=large_smoke;a=12;s=0.2} @self
+  - effect:sound{s=entity.enderman.teleport;v=0.5;p=1.6} @self
+  - velocity{m=set;x=0.7;y=0.2;z=0;relative=true} @self
+  - effect:particles{p=crit;a=6;s=0.15} @self
+  - actionmessage{m="&b&l▶ DODGE RIGHT!"} @owner
+
+# ถอยหลัง - Backstep
+ShadowClone_DodgeBack:
+  Skills:
+  - effect:particles{p=large_smoke;a=15;s=0.25} @self
+  - effect:sound{s=entity.enderman.teleport;v=0.6;p=1.4} @self
+  - velocity{m=set;x=0;y=0.3;z=-0.8;relative=true} @self
+  - effect:particles{p=crit;a=8;s=0.2} @self
+  - actionmessage{m="&e&l▼ BACKSTEP!"} @owner
+
+
+# ================================
+# ADVANCED DODGE - Archer Backflip
+# ================================
 ShadowClone_Backflip:
   Cooldown: 1
   Skills:
   - cancelevent
   - effect:particles{p=large_smoke;a=20;s=0.3} @self
   - effect:sound{s=entity.enderman.teleport;v=0.7;p=1.2} @self
-  - velocity{m=set;x=0;y=0.5;z=-0.8;relative=true} @self
-  - delay 10
+  - velocity{m=set;x=0;y=0.6;z=-1.0;relative=true} @self
+  - actionmessage{m="&d&l↻ BACKFLIP!"} @owner
+  - delay 8
+  # ยิงตอบโต้ - ใช้ @target แทน @trigger
   - skill{s=ShadowClone_ArrowShot} @target ?!isowner
 
+
+# ================================
+# MELEE DODGE - Shield Block + Counter (FIXED)
+# ================================
 ShadowClone_Block:
   Cooldown: 0.5
   Skills:
   - cancelevent
   - effect:sound{s=item.shield.block;v=0.8;p=1} @self
-  - effect:particles{p=crit;a=5;s=0.15} @self
+  - effect:particles{p=crit;a=8;s=0.15} @self
   - actionmessage{m="&7&l🛡 BLOCK!"} @owner
+  # 40% โอกาสโต้กลับหลัง Block - ใช้ @target แทน @trigger
+  - skill{s=ShadowClone_CounterAttack} @target 0.4
+
+# Counter Attack หลัง Block (FIXED)
+ShadowClone_CounterAttack:
+  Conditions:
+  - "!isowner"
+  Skills:
+  - delay 3
+  - effect:particles{p=sweep_attack;a=1} @self
+  - effect:sound{s=entity.player.attack.crit;v=0.7;p=1.2} @self
+  - damage{a=12;pkb=true} @target
+  - actionmessage{m="&c&l⚔ COUNTER!"} @owner
+
+
+# ================================
+# PARRY SYSTEM - บล็อกแม่นยำ (FIXED)
+# ================================
+ShadowClone_Parry:
+  Cooldown: 2
+  Skills:
+  - cancelevent
+  - effect:sound{s=entity.iron_golem.damage;v=0.6;p=1.5} @self
+  - effect:particles{p=enchanted_hit;a=15;s=0.3} @self
+  - actionmessage{m="&6&l⚔ PARRY!"} @owner
+  # Parry สำเร็จ = debuff attacker - ใช้ @target
+  - potion{t=SLOWNESS;d=20;l=3} @target
+  - potion{t=WEAKNESS;d=20;l=1} @target
+  - delay 5
+  - skill{s=ShadowClone_HeavySlash} @target ?!isowner
 
 
 # ================================
@@ -133,6 +205,8 @@ ShadowClone_MeleeCombo:
   - skill{s=ShadowClone_HeavySlash} @target 0.3
 
 ShadowClone_HeavySlash:
+  Conditions:
+  - "!isowner"
   Skills:
   - effect:particles{p=crit;a=15;s=0.25} @target
   - effect:sound{s=entity.player.attack.crit;v=0.8;p=0.8} @self
@@ -196,3 +270,25 @@ ShadowClone_Death:
   - effect:particles{p=large_smoke;a=60;s=0.8} @self
   - effect:particles{p=soul;a=15;s=0.4} @self
   - effect:sound{s=entity.wither.hurt;v=0.6;p=1.5} @self
+
+
+# ================================
+# CHECK OWNER ONLINE - ลบ Clone เมื่อ Owner ออกจากเกม
+# ================================
+ShadowClone_CheckOwnerOnline:
+  Conditions:
+  # ถ้า Owner ไม่อยู่ในระยะ 500 blocks = น่าจะออกจากเกมแล้ว
+  - distance{d=>500} @owner
+  Skills:
+  # Owner หลุดออกแล้ว - ลบ Clone
+  - effect:particles{p=large_smoke;a=40;s=0.5} @self
+  - effect:particles{p=soul;a=20;s=0.4} @self
+  - effect:sound{s=entity.enderman.teleport;v=0.5;p=0.5} @self
+  - remove @self
+
+# ทางเลือก: ถ้า Owner ออฟไลน์ (ใช้ได้เฉพาะ MythicMobs Premium)
+ShadowClone_CheckOwnerOffline:
+  Conditions:
+  - playernotwithin{r=1000}
+  Skills:
+  - remove @self
