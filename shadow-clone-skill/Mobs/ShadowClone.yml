@@ -1,13 +1,13 @@
 # ================================
-# SHADOW CLONE MOB - Version 2.0
+# SHADOW CLONE MOB - Version 2.2
 # ================================
 # ใส่ไฟล์นี้ใน: plugins/MythicMobs/Mobs/ShadowClone.yml
-# Version: 2.0 - Modes + Ultimate + Sync Attack
+# Version: 2.2 - Fixed for MythicMobs FREE
 # Required: MythicMobs 5.3+ (Free หรือ Premium)
 
 ShadowClone:
   Type: ZOMBIE
-  Display: '&8Shadow Clone'
+  Display: '<&8>Shadow Clone'
   Health: 120
   Damage: 10
   Faction: ShadowClones
@@ -46,11 +46,11 @@ ShadowClone:
   - attacker 0
   - otherfactionmonsters 1
   
-  # Skills v2.0
+  # Skills v2.2 - Fixed for MythicMobs FREE
   Skills:
   # Core Events
   - skill{s=ShadowClone_Spawn} @self ~onSpawn
-  - skill{s=ShadowClone_SmartAttack;sync=true} @target ~onAttack ?!isowner
+  - skill{s=ShadowClone_SmartAttack;sync=true} @target ~onAttack
   - skill{s=ShadowClone_Death} @self ~onDeath
   
   # Dodge System (60% chance)
@@ -74,11 +74,11 @@ ShadowClone:
 
 
 # ================================
-# MELEE SHADOW CLONE - Version 2.0
+# MELEE SHADOW CLONE - Version 2.2
 # ================================
 ShadowClone_Melee:
   Type: ZOMBIE
-  Display: '&8Shadow Clone &7[&c⚔&7]'
+  Display: '<&8>Shadow Clone <&7>[<&c>⚔<&7>]'
   Health: 130
   Damage: 12
   Faction: ShadowClones
@@ -114,11 +114,11 @@ ShadowClone_Melee:
   - attacker 0
   - otherfactionmonsters 1
   
-  # Skills v2.0 - Melee Specialist
+  # Skills v2.2 - Melee Specialist (Fixed for FREE)
   Skills:
   # Core Events
   - skill{s=ShadowClone_Spawn} @self ~onSpawn
-  - skill{s=ShadowClone_MeleeCombo;sync=true} @target ~onAttack ?!isowner
+  - skill{s=ShadowClone_MeleeCombo;sync=true} @target ~onAttack
   - skill{s=ShadowClone_Death} @self ~onDeath
   
   # Defense System: 50% Dodge, 25% Parry, 25% Block
@@ -126,9 +126,9 @@ ShadowClone_Melee:
   - skill{s=ShadowClone_Parry} @self ~onDamaged 0.25
   - skill{s=ShadowClone_Block} @self ~onDamaged 0.25
   
-  # Ultimate: Shadow Storm (triggered when charged)
+  # Ultimate: Shadow Storm (random 10% chance every 10 seconds)
   - skill{s=Clone_ChargeUltimate} @self ~onDamaged 0.4
-  - skill{s=Clone_ShadowStorm} @target ~onTimer:200 ?varequals{var=mob.ult_ready;val=1}
+  - skill{s=Clone_ShadowStorm} @target ~onTimer:200 0.1
   
   # Status & Follow
   - skill{s=ShadowClone_StatusDisplay} @self ~onTimer:60
@@ -142,11 +142,11 @@ ShadowClone_Melee:
 
 
 # ================================
-# ARCHER SHADOW CLONE - Version 2.0
+# ARCHER SHADOW CLONE - Version 2.2
 # ================================
 ShadowClone_Archer:
   Type: SKELETON
-  Display: '&8Shadow Clone &7[&d🏹&7]'
+  Display: '<&8>Shadow Clone <&7>[<&d>🏹<&7>]'
   Health: 100
   Damage: 8
   Faction: ShadowClones
@@ -182,20 +182,20 @@ ShadowClone_Archer:
   - attacker 0
   - otherfactionmonsters 1
   
-  # Skills v2.0 - Archer Specialist
+  # Skills v2.2 - Archer Specialist (Fixed for FREE)
   Skills:
   # Core Events
   - skill{s=ShadowClone_Spawn} @self ~onSpawn
-  - skill{s=ShadowClone_ArrowShot;sync=true} @target ~onAttack ?!isowner
+  - skill{s=ShadowClone_ArrowShot;sync=true} @target ~onAttack
   - skill{s=ShadowClone_Death} @self ~onDeath
   
   # Defense System: 50% Dodge, 50% Backflip
   - skill{s=ShadowClone_Dodge} @self ~onDamaged 0.5
   - skill{s=ShadowClone_Backflip} @self ~onDamaged 0.5
   
-  # Ultimate: Rain of Shadows (triggered when charged)
+  # Ultimate: Rain of Shadows (random 10% chance every 10 seconds)
   - skill{s=Clone_ChargeUltimate} @self ~onDamaged 0.4
-  - skill{s=Clone_RainOfShadows} @target ~onTimer:200 ?varequals{var=mob.ult_ready;val=1}
+  - skill{s=Clone_RainOfShadows} @target ~onTimer:200 0.1
   
   # Status & Follow
   - skill{s=ShadowClone_StatusDisplay} @self ~onTimer:60
@@ -205,4 +205,3 @@ ShadowClone_Archer:
   # Mode AI & Aura
   - skill{s=ShadowClone_ModeAI} @self ~onTimer:40
   - skill{s=ShadowClone_ShadowAura} @self ~onTimer:20
-

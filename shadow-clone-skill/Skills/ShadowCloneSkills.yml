@@ -1,8 +1,8 @@
 # ================================================
-# SHADOW CLONE SKILLS - Advanced AI Dodge System v2.0
+# SHADOW CLONE SKILLS - Advanced AI Dodge System v2.3
 # ================================================
 # ใส่ไฟล์นี้ใน: plugins/MythicMobs/Skills/ShadowCloneSkills.yml
-# Version: 2.0 - Modes + Ultimate + Sync Attack + Stability
+# Version: 2.3 - Fixed for MythicMobs FREE (variable scope fix)
 # Required: MythicMobs 5.3+ (Free หรือ Premium)
 
 # ================================
@@ -10,30 +10,25 @@
 # ================================
 ShadowClone_Activate:
   Cooldown: 60
-  Conditions:
-  # ป้องกัน Clone ซ้ำซ้อน
-  - varnotset{var=scope.caster.has_clone}
   Skills:
-  # ตั้งค่า flag ว่ามี clone แล้ว
-  - setvariable{var=scope.caster.has_clone;val=1;type=INTEGER}
   # แสดงข้อความช่วยเหลือ
-  - message{m="&8&l━━━━━━━━━━━━━━━━━━━━━━━━━━━━"} @self
-  - message{m="&8&l⚔ &7เรียก&8ร่างเงา&7ออกมาช่วยรบ!"} @self
-  - message{m=""} @self
-  - message{m="&e&l📋 ความสามารถของร่างเงา:"} @self
-  - message{m="  &8• &a◀▶ &7หลบหลีก ซ้าย/ขวา/ถอยหลัง"} @self
-  - message{m="  &8• &c⚔ &7โจมตีศัตรูอัตโนมัติ"} @self
-  - message{m="  &8• &d🛡 &7Parry & Block โต้กลับ"} @self
-  - message{m="  &8• &b↯ &7ติดตามเจ้าของ"} @self
-  - message{m="  &8• &5⚡ &7Ultimate Skills"} @self
-  - message{m=""} @self
-  - message{m="&6&l🎮 โหมดการรบ:"} @self
-  - message{m="  &8• &c⚔ Aggressive &8- &7เน้นโจมตี"} @self
-  - message{m="  &8• &b🛡 Defensive &8- &7เน้นป้องกัน"} @self
-  - message{m="  &8• &a💚 Support &8- &7ช่วยเหลือ Owner"} @self
-  - message{m=""} @self
-  - message{m="&c&l⏱ &7ระยะเวลา: &e20 &7วินาที"} @self
-  - message{m="&8&l━━━━━━━━━━━━━━━━━━━━━━━━━━━━"} @self
+  - 'message{m="<&8><&l>━━━━━━━━━━━━━━━━━━━━━━━━━━━━"} @self'
+  - 'message{m="<&8><&l>⚔ <&7>เรียก<&8>ร่างเงา<&7>ออกมาช่วยรบ!"} @self'
+  - 'message{m=""} @self'
+  - 'message{m="<&e><&l>📋 ความสามารถของร่างเงา:"} @self'
+  - 'message{m="  <&8>• <&a>◀▶ <&7>หลบหลีก ซ้าย/ขวา/ถอยหลัง"} @self'
+  - 'message{m="  <&8>• <&c>⚔ <&7>โจมตีศัตรูอัตโนมัติ"} @self'
+  - 'message{m="  <&8>• <&d>🛡 <&7>Parry <&7>Block โต้กลับ"} @self'
+  - 'message{m="  <&8>• <&b>↯ <&7>ติดตามเจ้าของ"} @self'
+  - 'message{m="  <&8>• <&5>⚡ <&7>Ultimate Skills"} @self'
+  - 'message{m=""} @self'
+  - 'message{m="<&6><&l>🎮 โหมดการรบ:"} @self'
+  - 'message{m="  <&8>• <&c>⚔ Aggressive <&8>- <&7>เน้นโจมตี"} @self'
+  - 'message{m="  <&8>• <&b>🛡 Defensive <&8>- <&7>เน้นป้องกัน"} @self'
+  - 'message{m="  <&8>• <&a>💚 Support <&8>- <&7>ช่วยเหลือ Owner"} @self'
+  - 'message{m=""} @self'
+  - 'message{m="<&c><&l>⏱ <&7>ระยะเวลา: <&e>20 <&7>วินาที"} @self'
+  - 'message{m="<&8><&l>━━━━━━━━━━━━━━━━━━━━━━━━━━━━"} @self'
   # Effects
   - effect:sound{s=entity.enderman.teleport;v=1;p=0.4} @self
   - effect:particles{p=large_smoke;a=40;s=0.6} @self
@@ -44,53 +39,37 @@ ShadowClone_Activate:
 # ตรวจสอบอาวุธ
 ShadowClone_SummonSmart:
   Skills:
-  - setvariable{var=scope.caster.clone_spawned;val=0;type=INTEGER}
   # Bows
-  - skill{s=ShadowClone_SpawnArcher} @self ?wearing{slot=hand;m=BOW} ?varequals{var=scope.caster.clone_spawned;val=0}
-  - skill{s=ShadowClone_SpawnArcher} @self ?wearing{slot=hand;m=CROSSBOW} ?varequals{var=scope.caster.clone_spawned;val=0}
+  - skill{s=ShadowClone_SpawnArcher} @self ?wearing{slot=hand;m=BOW}
+  - skill{s=ShadowClone_SpawnArcher} @self ?wearing{slot=hand;m=CROSSBOW}
   # Swords
-  - skill{s=ShadowClone_SpawnMelee} @self ?wearing{slot=hand;m=DIAMOND_SWORD} ?varequals{var=scope.caster.clone_spawned;val=0}
-  - skill{s=ShadowClone_SpawnMelee} @self ?wearing{slot=hand;m=NETHERITE_SWORD} ?varequals{var=scope.caster.clone_spawned;val=0}
-  - skill{s=ShadowClone_SpawnMelee} @self ?wearing{slot=hand;m=IRON_SWORD} ?varequals{var=scope.caster.clone_spawned;val=0}
+  - skill{s=ShadowClone_SpawnMelee} @self ?wearing{slot=hand;m=DIAMOND_SWORD}
+  - skill{s=ShadowClone_SpawnMelee} @self ?wearing{slot=hand;m=NETHERITE_SWORD}
+  - skill{s=ShadowClone_SpawnMelee} @self ?wearing{slot=hand;m=IRON_SWORD}
   # Axes
-  - skill{s=ShadowClone_SpawnMelee} @self ?wearing{slot=hand;m=DIAMOND_AXE} ?varequals{var=scope.caster.clone_spawned;val=0}
-  - skill{s=ShadowClone_SpawnMelee} @self ?wearing{slot=hand;m=NETHERITE_AXE} ?varequals{var=scope.caster.clone_spawned;val=0}
-  # Default
-  - skill{s=ShadowClone_SpawnDefault} @self ?varequals{var=scope.caster.clone_spawned;val=0}
+  - skill{s=ShadowClone_SpawnMelee} @self ?wearing{slot=hand;m=DIAMOND_AXE}
+  - skill{s=ShadowClone_SpawnMelee} @self ?wearing{slot=hand;m=NETHERITE_AXE}
+  # Default - summon if nothing else matched
+  - skill{s=ShadowClone_SpawnDefault} @self
 
 ShadowClone_SpawnArcher:
   Skills:
   - summon{t=ShadowClone_Archer;a=1;r=2} @self
-  - setvariable{var=scope.caster.clone_spawned;val=1;type=INTEGER}
 
 ShadowClone_SpawnMelee:
   Skills:
   - summon{t=ShadowClone_Melee;a=1;r=2} @self
-  - setvariable{var=scope.caster.clone_spawned;val=1;type=INTEGER}
 
 ShadowClone_SpawnDefault:
   Skills:
   - summon{t=ShadowClone;a=1;r=2} @self
-  - setvariable{var=scope.caster.clone_spawned;val=1;type=INTEGER}
 
 # ================================
 # SPAWN EFFECTS
 # ================================
 ShadowClone_Spawn:
   Skills:
-  # Owner tracking
-  - setvariable{var=mob.owner_uuid;val=<caster.uuid>;type=STRING} @self
-  - setvariable{var=mob.owner_name;val=<caster.name>;type=STRING} @self
-  
-  # Initialize Mode System (default: aggressive)
-  - setvariable{var=mob.mode;val=aggressive;type=STRING} @self
-  - setvariable{var=mob.ult_charge;val=0;type=INTEGER} @self
-  - setvariable{var=mob.combo_count;val=0;type=INTEGER} @self
-  
-  # ========================================
-  # DISGUISE - Copy Player Appearance
-  # ต้องลง LibsDisguises plugin!
-  # ========================================
+  # DISGUISE - Copy Player Appearance (ต้องลง LibsDisguises plugin!)
   - disguise{d="player <caster.name>"} @self
   
   # Effects
@@ -98,8 +77,8 @@ ShadowClone_Spawn:
   - effect:particles{p=portal;a=40;s=0.6} @self
   - effect:sound{s=entity.enderman.teleport;v=0.8;p=0.6} @self
   - delay 5
-  - message{m="&8&l⚔ &7ร่างเงาพร้อมรบ! &8[&cAGGRESSIVE&8]"} @owner
-  - actionmessage{m="&8[&7Clone &a✓&8] &cAggressive Mode"} @owner
+  - 'message{m="<&8><&l>⚔ <&7>ร่างเงาพร้อมรบ! <&8>[<&c>AGGRESSIVE<&8>]"} @owner'
+  - 'actionmessage{m="<&8>[<&7>Clone <&a>✓<&8>] <&c>Aggressive Mode"} @owner'
   # Despawn timer (20 seconds = 400 ticks)
   - skill{s=ShadowClone_SetDespawnTimer} @self
 
@@ -110,14 +89,13 @@ ShadowClone_SetDespawnTimer:
 
 
 # ================================
-# SMART DODGE SYSTEM - AI ฉลาด! (FIXED)
+# SMART DODGE SYSTEM - AI ฉลาด!
 # ================================
-# Main Dodge - สุ่มทิศทางหลบ (ใช้ randomskill แทน)
+# Main Dodge - สุ่มทิศทางหลบ
 ShadowClone_Dodge:
   Cooldown: 0.5
   Skills:
   - cancelevent
-  # ใช้ randomskill เพื่อเลือกทิศทางเดียว
   - randomskill{skills=ShadowClone_DodgeLeft,ShadowClone_DodgeRight,ShadowClone_DodgeBack}
 
 # หลบซ้าย - Side Step Left
@@ -127,7 +105,7 @@ ShadowClone_DodgeLeft:
   - effect:sound{s=entity.enderman.teleport;v=0.5;p=1.6} @self
   - velocity{m=set;x=-0.7;y=0.2;z=0;relative=true} @self
   - effect:particles{p=crit;a=6;s=0.15} @self
-  - actionmessage{m="&b&l◀ DODGE LEFT!"} @owner
+  - 'actionmessage{m="<&b><&l>◀ DODGE LEFT!"} @owner'
 
 # หลบขวา - Side Step Right
 ShadowClone_DodgeRight:
@@ -136,7 +114,7 @@ ShadowClone_DodgeRight:
   - effect:sound{s=entity.enderman.teleport;v=0.5;p=1.6} @self
   - velocity{m=set;x=0.7;y=0.2;z=0;relative=true} @self
   - effect:particles{p=crit;a=6;s=0.15} @self
-  - actionmessage{m="&b&l▶ DODGE RIGHT!"} @owner
+  - 'actionmessage{m="<&b><&l>▶ DODGE RIGHT!"} @owner'
 
 # ถอยหลัง - Backstep
 ShadowClone_DodgeBack:
@@ -145,7 +123,7 @@ ShadowClone_DodgeBack:
   - effect:sound{s=entity.enderman.teleport;v=0.6;p=1.4} @self
   - velocity{m=set;x=0;y=0.3;z=-0.8;relative=true} @self
   - effect:particles{p=crit;a=8;s=0.2} @self
-  - actionmessage{m="&e&l▼ BACKSTEP!"} @owner
+  - 'actionmessage{m="<&e><&l>▼ BACKSTEP!"} @owner'
 
 
 # ================================
@@ -158,14 +136,13 @@ ShadowClone_Backflip:
   - effect:particles{p=large_smoke;a=20;s=0.3} @self
   - effect:sound{s=entity.enderman.teleport;v=0.7;p=1.2} @self
   - velocity{m=set;x=0;y=0.6;z=-1.0;relative=true} @self
-  - actionmessage{m="&d&l↻ BACKFLIP!"} @owner
+  - 'actionmessage{m="<&d><&l>↻ BACKFLIP!"} @owner'
   - delay 8
-  # ยิงตอบโต้ - ใช้ @target แทน @trigger
-  - skill{s=ShadowClone_ArrowShot} @target ?!isowner
+  - skill{s=ShadowClone_ArrowShot} @target
 
 
 # ================================
-# MELEE DODGE - Shield Block + Counter (FIXED)
+# MELEE DODGE - Shield Block + Counter
 # ================================
 ShadowClone_Block:
   Cooldown: 0.5
@@ -173,24 +150,24 @@ ShadowClone_Block:
   - cancelevent
   - effect:sound{s=item.shield.block;v=0.8;p=1} @self
   - effect:particles{p=crit;a=8;s=0.15} @self
-  - actionmessage{m="&7&l🛡 BLOCK!"} @owner
-  # 40% โอกาสโต้กลับหลัง Block - ใช้ @target แทน @trigger
+  - 'actionmessage{m="<&7><&l>🛡 BLOCK!"} @owner'
+  # 40% โอกาสโต้กลับหลัง Block
   - skill{s=ShadowClone_CounterAttack} @target 0.4
 
-# Counter Attack หลัง Block (FIXED)
+# Counter Attack หลัง Block
 ShadowClone_CounterAttack:
-  Conditions:
-  - "!isowner"
+  TargetConditions:
+  - entitytype MONSTER
   Skills:
   - delay 3
   - effect:particles{p=sweep_attack;a=1} @self
   - effect:sound{s=entity.player.attack.crit;v=0.7;p=1.2} @self
   - damage{a=12;pkb=true} @target
-  - actionmessage{m="&c&l⚔ COUNTER!"} @owner
+  - 'actionmessage{m="<&c><&l>⚔ COUNTER!"} @owner'
 
 
 # ================================
-# PARRY SYSTEM - บล็อกแม่นยำ (FIXED)
+# PARRY SYSTEM - บล็อกแม่นยำ
 # ================================
 ShadowClone_Parry:
   Cooldown: 2
@@ -198,12 +175,12 @@ ShadowClone_Parry:
   - cancelevent
   - effect:sound{s=entity.iron_golem.damage;v=0.6;p=1.5} @self
   - effect:particles{p=enchanted_hit;a=15;s=0.3} @self
-  - actionmessage{m="&6&l⚔ PARRY!"} @owner
-  # Parry สำเร็จ = debuff attacker - ใช้ @target
+  - 'actionmessage{m="<&6><&l>⚔ PARRY!"} @owner'
+  # Parry สำเร็จ = debuff attacker
   - potion{t=SLOWNESS;d=20;l=3} @target
   - potion{t=WEAKNESS;d=20;l=1} @target
   - delay 5
-  - skill{s=ShadowClone_HeavySlash} @target ?!isowner
+  - skill{s=ShadowClone_HeavySlash} @target
 
 
 # ================================
@@ -211,8 +188,8 @@ ShadowClone_Parry:
 # ================================
 ShadowClone_SmartAttack:
   Cooldown: 0.5
-  Conditions:
-  - "!isowner"
+  TargetConditions:
+  - entitytype MONSTER
   Skills:
   - skill{s=ShadowClone_ArrowShot} @target ?distance{d=>8}
   - skill{s=ShadowClone_MeleeCombo} @target ?distance{d=<8}
@@ -223,8 +200,8 @@ ShadowClone_SmartAttack:
 # ================================
 ShadowClone_MeleeCombo:
   Cooldown: 0.8
-  Conditions:
-  - "!isowner"
+  TargetConditions:
+  - entitytype MONSTER
   Skills:
   - damage{a=8;pkb=true} @target
   - effect:particles{p=sweep_attack;a=1} @self
@@ -233,8 +210,8 @@ ShadowClone_MeleeCombo:
   - skill{s=ShadowClone_HeavySlash} @target 0.3
 
 ShadowClone_HeavySlash:
-  Conditions:
-  - "!isowner"
+  TargetConditions:
+  - entitytype MONSTER
   Skills:
   - effect:particles{p=crit;a=15;s=0.25} @target
   - effect:sound{s=entity.player.attack.crit;v=0.8;p=0.8} @self
@@ -243,23 +220,23 @@ ShadowClone_HeavySlash:
 
 
 # ================================
-# RANGED COMBAT
+# RANGED COMBAT - FIXED for Free/Premium
 # ================================
 ShadowClone_ArrowShot:
   Cooldown: 1
-  Conditions:
-  - "!isowner"
+  TargetConditions:
+  - entitytype MONSTER
   Skills:
   - effect:sound{s=entity.arrow.shoot;v=0.8;p=1} @self
-  - projectile{onTick=ShadowClone_ArrowTick;onHit=ShadowClone_ArrowHit;type=ARROW;velocity=2.8;interval=2;maxduration=40;gravity=0.05} @target
+  - shoot{type=ARROW;velocity=2.8;damage=10} @target
 
 ShadowClone_ArrowTick:
   Skills:
   - effect:particles{p=crit;a=1;s=0.08} @origin
 
 ShadowClone_ArrowHit:
-  Conditions:
-  - "!isowner"
+  TargetConditions:
+  - entitytype MONSTER
   Skills:
   - damage{a=10} @target
   - effect:particles{p=crit;a=8;s=0.25} @target
@@ -281,13 +258,11 @@ ShadowClone_FollowOwner:
 
 
 # ================================
-# EXPIRE & DEATH
+# EXPIRE AND DEATH
 # ================================
 ShadowClone_Expire:
   Skills:
-  # Clear clone flag so owner can summon again
-  - setvariable{var=scope.caster.has_clone;val=0;type=INTEGER} @owner
-  - message{m="&8&l⚔ &7ร่างเงา&8หายไป&7ในความมืด..."} @owner
+  - 'message{m="<&8><&l>⚔ <&7>ร่างเงา<&8>หายไป<&7>ในความมืด..."} @owner'
   - effect:particles{p=large_smoke;a=50;s=0.6} @self
   - effect:particles{p=portal;a=30;s=0.4} @self
   - effect:sound{s=entity.enderman.teleport;v=0.8;p=0.3} @self
@@ -296,24 +271,19 @@ ShadowClone_Expire:
 
 ShadowClone_Death:
   Skills:
-  # Clear clone flag so owner can summon again
-  - setvariable{var=scope.caster.has_clone;val=0;type=INTEGER} @owner
-  - message{m="&8&l⚔ &cร่างเงาถูกทำลาย!"} @owner
+  - 'message{m="<&8><&l>⚔ <&c>ร่างเงาถูกทำลาย!"} @owner'
   - effect:particles{p=large_smoke;a=60;s=0.8} @self
   - effect:particles{p=soul;a=15;s=0.4} @self
   - effect:sound{s=entity.wither.hurt;v=0.6;p=1.5} @self
 
 
 # ================================
-# CHECK OWNER ONLINE - ลบ Clone เมื่อ Owner ออกจากเกม
+# CHECK OWNER ONLINE
 # ================================
 ShadowClone_CheckOwnerOnline:
   Conditions:
-  # ถ้า Owner ไม่อยู่ในระยะ 500 blocks = น่าจะออกจากเกมแล้ว
   - distance{d=>500} @owner
   Skills:
-  # Clear flag and remove
-  - setvariable{var=scope.caster.has_clone;val=0;type=INTEGER} @owner
   - effect:particles{p=large_smoke;a=40;s=0.5} @self
   - effect:particles{p=soul;a=20;s=0.4} @self
   - effect:sound{s=entity.enderman.teleport;v=0.5;p=0.5} @self
@@ -321,15 +291,15 @@ ShadowClone_CheckOwnerOnline:
 
 
 # ================================
-# STATUS DISPLAY - แสดงสถานะ Clone
+# STATUS DISPLAY
 # ================================
 ShadowClone_StatusDisplay:
   Skills:
-  - actionmessage{m="&8[&7Clone &c<mob.health>&8/&c<mob.maxhealth> &8| &6<mob.mode> &8| &e⚡<mob.ult_charge>%&8]"} @owner
+  - 'actionmessage{m="<&8>[<&7>Clone <&c><caster.hp><&8>/<&c><caster.mhp> <&8>| <&6>Active<&8>]"} @owner'
 
 
 # ================================
-# SHADOW AURA - เอฟเฟกต์รอบตัว
+# SHADOW AURA
 # ================================
 ShadowClone_ShadowAura:
   Skills:
@@ -340,27 +310,20 @@ ShadowClone_ShadowAura:
 # ================================
 # COMBO SYSTEM
 # ================================
-ShadowClone_ComboTracker:
-  Skills:
-  - setvariable{var=mob.combo_count;val=<mob.combo_count>+1;type=INTEGER} @self
-  # Combo finisher at 5 hits
-  - skill{s=ShadowClone_ComboFinisher} @target ?varrange{var=mob.combo_count;from=5}
-
 ShadowClone_ComboFinisher:
-  Conditions:
-  - "!isowner"
+  TargetConditions:
+  - entitytype MONSTER
   Skills:
-  - setvariable{var=mob.combo_count;val=0;type=INTEGER} @self
   - effect:particles{p=sweep_attack;a=5;s=1} @self
   - effect:particles{p=crit;a=20;s=0.4} @target
   - effect:sound{s=entity.player.attack.crit;v=0.9;p=0.7} @self
   - damage{a=20;pkb=true;ignorearmor=true} @target
   - throw{v=0.6;vy=0.4} @target
-  - actionmessage{m="&c&l⚔ COMBO FINISHER!"} @owner
+  - 'actionmessage{m="<&c><&l>⚔ COMBO FINISHER!"} @owner'
 
 
 # ================================
-# CLONE RECALL - เรียก Clone กลับมา
+# CLONE RECALL
 # ================================
 ShadowClone_Recall:
   Skills:
@@ -368,13 +331,12 @@ ShadowClone_Recall:
   - effect:sound{s=entity.enderman.teleport;v=0.6;p=1.2} @self
   - teleport @owner
   - effect:particles{p=large_smoke;a=15;s=0.3} @self
-  - actionmessage{m="&a✓ &7Clone recalled!"} @owner
+  - 'actionmessage{m="<&a>✓ <&7>Clone recalled!"} @owner'
 
 
 # ================================
-# MODE COMMANDS - เปลี่ยนโหมด (Signal)
+# MODE COMMANDS
 # ================================
-# ใช้: /mm signal <mobUUID> aggressive|defensive|support
 ~onSignal:aggressive:
   Skills:
   - skill{s=ShadowClone_SetMode_Aggressive} @self
@@ -386,4 +348,3 @@ ShadowClone_Recall:
 ~onSignal:support:
   Skills:
   - skill{s=ShadowClone_SetMode_Support} @self
-
