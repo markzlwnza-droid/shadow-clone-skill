@@ -1,8 +1,8 @@
 # ================================================
-# SHADOW CLONE SKILLS - Advanced AI Dodge System (Bug Fixed)
+# SHADOW CLONE SKILLS - Advanced AI Dodge System v2.0
 # ================================================
 # ใส่ไฟล์นี้ใน: plugins/MythicMobs/Skills/ShadowCloneSkills.yml
-# Version: 1.5 - Smart Directional Dodge (Fixed)
+# Version: 2.0 - Modes + Ultimate + Sync Attack + Stability
 # Required: MythicMobs 5.3+ (Free หรือ Premium)
 
 # ================================
@@ -10,8 +10,31 @@
 # ================================
 ShadowClone_Activate:
   Cooldown: 60
+  Conditions:
+  # ป้องกัน Clone ซ้ำซ้อน
+  - varnotset{var=scope.caster.has_clone}
   Skills:
+  # ตั้งค่า flag ว่ามี clone แล้ว
+  - setvariable{var=scope.caster.has_clone;val=1;type=INTEGER}
+  # แสดงข้อความช่วยเหลือ
+  - message{m="&8&l━━━━━━━━━━━━━━━━━━━━━━━━━━━━"} @self
   - message{m="&8&l⚔ &7เรียก&8ร่างเงา&7ออกมาช่วยรบ!"} @self
+  - message{m=""} @self
+  - message{m="&e&l📋 ความสามารถของร่างเงา:"} @self
+  - message{m="  &8• &a◀▶ &7หลบหลีก ซ้าย/ขวา/ถอยหลัง"} @self
+  - message{m="  &8• &c⚔ &7โจมตีศัตรูอัตโนมัติ"} @self
+  - message{m="  &8• &d🛡 &7Parry & Block โต้กลับ"} @self
+  - message{m="  &8• &b↯ &7ติดตามเจ้าของ"} @self
+  - message{m="  &8• &5⚡ &7Ultimate Skills"} @self
+  - message{m=""} @self
+  - message{m="&6&l🎮 โหมดการรบ:"} @self
+  - message{m="  &8• &c⚔ Aggressive &8- &7เน้นโจมตี"} @self
+  - message{m="  &8• &b🛡 Defensive &8- &7เน้นป้องกัน"} @self
+  - message{m="  &8• &a💚 Support &8- &7ช่วยเหลือ Owner"} @self
+  - message{m=""} @self
+  - message{m="&c&l⏱ &7ระยะเวลา: &e20 &7วินาที"} @self
+  - message{m="&8&l━━━━━━━━━━━━━━━━━━━━━━━━━━━━"} @self
+  # Effects
   - effect:sound{s=entity.enderman.teleport;v=1;p=0.4} @self
   - effect:particles{p=large_smoke;a=40;s=0.6} @self
   - effect:particles{p=portal;a=50;s=0.8} @self
@@ -50,7 +73,6 @@ ShadowClone_SpawnDefault:
   - summon{t=ShadowClone;a=1;r=2} @self
   - setvariable{var=scope.caster.clone_spawned;val=1;type=INTEGER}
 
-
 # ================================
 # SPAWN EFFECTS
 # ================================
@@ -59,6 +81,11 @@ ShadowClone_Spawn:
   # Owner tracking
   - setvariable{var=mob.owner_uuid;val=<caster.uuid>;type=STRING} @self
   - setvariable{var=mob.owner_name;val=<caster.name>;type=STRING} @self
+  
+  # Initialize Mode System (default: aggressive)
+  - setvariable{var=mob.mode;val=aggressive;type=STRING} @self
+  - setvariable{var=mob.ult_charge;val=0;type=INTEGER} @self
+  - setvariable{var=mob.combo_count;val=0;type=INTEGER} @self
   
   # ========================================
   # DISGUISE - Copy Player Appearance
@@ -71,7 +98,8 @@ ShadowClone_Spawn:
   - effect:particles{p=portal;a=40;s=0.6} @self
   - effect:sound{s=entity.enderman.teleport;v=0.8;p=0.6} @self
   - delay 5
-  - message{m="&8&l⚔ &7ร่างเงาพร้อมรบ!"} @owner
+  - message{m="&8&l⚔ &7ร่างเงาพร้อมรบ! &8[&cAGGRESSIVE&8]"} @owner
+  - actionmessage{m="&8[&7Clone &a✓&8] &cAggressive Mode"} @owner
   # Despawn timer (20 seconds = 400 ticks)
   - skill{s=ShadowClone_SetDespawnTimer} @self
 
@@ -257,6 +285,8 @@ ShadowClone_FollowOwner:
 # ================================
 ShadowClone_Expire:
   Skills:
+  # Clear clone flag so owner can summon again
+  - setvariable{var=scope.caster.has_clone;val=0;type=INTEGER} @owner
   - message{m="&8&l⚔ &7ร่างเงา&8หายไป&7ในความมืด..."} @owner
   - effect:particles{p=large_smoke;a=50;s=0.6} @self
   - effect:particles{p=portal;a=30;s=0.4} @self
@@ -266,6 +296,8 @@ ShadowClone_Expire:
 
 ShadowClone_Death:
   Skills:
+  # Clear clone flag so owner can summon again
+  - setvariable{var=scope.caster.has_clone;val=0;type=INTEGER} @owner
   - message{m="&8&l⚔ &cร่างเงาถูกทำลาย!"} @owner
   - effect:particles{p=large_smoke;a=60;s=0.8} @self
   - effect:particles{p=soul;a=15;s=0.4} @self
@@ -280,15 +312,78 @@ ShadowClone_CheckOwnerOnline:
   # ถ้า Owner ไม่อยู่ในระยะ 500 blocks = น่าจะออกจากเกมแล้ว
   - distance{d=>500} @owner
   Skills:
-  # Owner หลุดออกแล้ว - ลบ Clone
+  # Clear flag and remove
+  - setvariable{var=scope.caster.has_clone;val=0;type=INTEGER} @owner
   - effect:particles{p=large_smoke;a=40;s=0.5} @self
   - effect:particles{p=soul;a=20;s=0.4} @self
   - effect:sound{s=entity.enderman.teleport;v=0.5;p=0.5} @self
   - remove @self
 
-# ทางเลือก: ถ้า Owner ออฟไลน์ (ใช้ได้เฉพาะ MythicMobs Premium)
-ShadowClone_CheckOwnerOffline:
-  Conditions:
-  - playernotwithin{r=1000}
+
+# ================================
+# STATUS DISPLAY - แสดงสถานะ Clone
+# ================================
+ShadowClone_StatusDisplay:
   Skills:
-  - remove @self
+  - actionmessage{m="&8[&7Clone &c<mob.health>&8/&c<mob.maxhealth> &8| &6<mob.mode> &8| &e⚡<mob.ult_charge>%&8]"} @owner
+
+
+# ================================
+# SHADOW AURA - เอฟเฟกต์รอบตัว
+# ================================
+ShadowClone_ShadowAura:
+  Skills:
+  - effect:particles{p=smoke;a=3;s=0.4} @self
+  - effect:particles{p=soul;a=1;s=0.3} @self
+
+
+# ================================
+# COMBO SYSTEM
+# ================================
+ShadowClone_ComboTracker:
+  Skills:
+  - setvariable{var=mob.combo_count;val=<mob.combo_count>+1;type=INTEGER} @self
+  # Combo finisher at 5 hits
+  - skill{s=ShadowClone_ComboFinisher} @target ?varrange{var=mob.combo_count;from=5}
+
+ShadowClone_ComboFinisher:
+  Conditions:
+  - "!isowner"
+  Skills:
+  - setvariable{var=mob.combo_count;val=0;type=INTEGER} @self
+  - effect:particles{p=sweep_attack;a=5;s=1} @self
+  - effect:particles{p=crit;a=20;s=0.4} @target
+  - effect:sound{s=entity.player.attack.crit;v=0.9;p=0.7} @self
+  - damage{a=20;pkb=true;ignorearmor=true} @target
+  - throw{v=0.6;vy=0.4} @target
+  - actionmessage{m="&c&l⚔ COMBO FINISHER!"} @owner
+
+
+# ================================
+# CLONE RECALL - เรียก Clone กลับมา
+# ================================
+ShadowClone_Recall:
+  Skills:
+  - effect:particles{p=portal;a=20;s=0.4} @self
+  - effect:sound{s=entity.enderman.teleport;v=0.6;p=1.2} @self
+  - teleport @owner
+  - effect:particles{p=large_smoke;a=15;s=0.3} @self
+  - actionmessage{m="&a✓ &7Clone recalled!"} @owner
+
+
+# ================================
+# MODE COMMANDS - เปลี่ยนโหมด (Signal)
+# ================================
+# ใช้: /mm signal <mobUUID> aggressive|defensive|support
+~onSignal:aggressive:
+  Skills:
+  - skill{s=ShadowClone_SetMode_Aggressive} @self
+
+~onSignal:defensive:
+  Skills:
+  - skill{s=ShadowClone_SetMode_Defensive} @self
+
+~onSignal:support:
+  Skills:
+  - skill{s=ShadowClone_SetMode_Support} @self
+

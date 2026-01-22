@@ -1,0 +1,205 @@
+# ================================================
+# SHADOW CLONE - ULTIMATE SKILLS
+# ================================================
+# ใส่ไฟล์นี้ใน: plugins/MythicMobs/Skills/ShadowCloneUltimate.yml
+# Version: 1.0 - Ultimate Skills for Each Clone Type
+# Required: MythicMobs 5.3+
+
+# ================================
+# MELEE ULTIMATE - SHADOW STORM
+# ================================
+# หมุนโจมตี AOE รอบตัว + Lifesteal
+Clone_ShadowStorm:
+  Cooldown: 25
+  Conditions:
+  - "!isowner"
+  Skills:
+  - actionmessage{m="&8&l⚔ &5&lSHADOW STORM!"} @owner
+  - message{m="&8━━━━━━━━━━━━━━━━━━━━━"} @owner
+  - message{m="&5  ⚔ ร่างเงาใช้ &lSHADOW STORM&5!"} @owner
+  - message{m="&8━━━━━━━━━━━━━━━━━━━━━"} @owner
+  
+  # Charge up
+  - effect:particles{p=portal;a=40;s=0.6} @self
+  - effect:particles{p=smoke;a=30;s=0.5} @self
+  - effect:sound{s=entity.wither.ambient;v=0.4;p=0.5} @self
+  - delay 10
+  
+  # Spin attack (3 rotations)
+  - skill{s=Clone_StormSpin} @self
+  - delay 8
+  - skill{s=Clone_StormSpin} @self
+  - delay 8
+  - skill{s=Clone_StormSpin} @self
+  
+  # Final burst
+  - delay 5
+  - skill{s=Clone_StormFinisher} @self
+
+Clone_StormSpin:
+  Skills:
+  - effect:particles{p=sweep_attack;a=8;s=1.5} @self
+  - effect:particles{p=smoke;a=25;s=0.8} @self
+  - effect:sound{s=entity.player.attack.sweep;v=0.8;p=1.2} @self
+  - damage{a=12} @EntitiesInRadius{r=3.5;types=!PLAYER}
+  # Lifesteal
+  - heal{a=3} @self
+
+Clone_StormFinisher:
+  Skills:
+  - effect:particles{p=explosion;a=3;s=0.5} @self
+  - effect:particles{p=soul;a=30;s=1} @self
+  - effect:sound{s=entity.wither.break_block;v=0.6;p=1} @self
+  - damage{a=25;ignorearmor=true} @EntitiesInRadius{r=4;types=!PLAYER}
+  - throw{v=0.8;vy=0.5} @EntitiesInRadius{r=4;types=!PLAYER}
+  # Big lifesteal
+  - heal{a=10} @self
+  - actionmessage{m="&5&l✓ Storm Complete! &7+HP"} @owner
+
+
+# ================================
+# ARCHER ULTIMATE - RAIN OF SHADOWS
+# ================================
+# ยิงลูกศรฝนใส่พื้นที่
+Clone_RainOfShadows:
+  Cooldown: 30
+  Conditions:
+  - "!isowner"
+  Skills:
+  - actionmessage{m="&8&l🏹 &d&lRAIN OF SHADOWS!"} @owner
+  - message{m="&8━━━━━━━━━━━━━━━━━━━━━"} @owner
+  - message{m="&d  🏹 ร่างเงาใช้ &lRAIN OF SHADOWS&d!"} @owner
+  - message{m="&8━━━━━━━━━━━━━━━━━━━━━"} @owner
+  
+  # Mark target location
+  - setvariable{var=skill.targetX;val=<target.location.x>;type=FLOAT} @self
+  - setvariable{var=skill.targetZ;val=<target.location.z>;type=FLOAT} @self
+  
+  # Charge
+  - effect:particles{p=portal;a=50;s=0.8} @target
+  - effect:sound{s=entity.ender_dragon.growl;v=0.3;p=2} @self
+  - delay 15
+  
+  # Rain of arrows
+  - skill{s=Clone_ArrowRain} @target
+  - delay 5
+  - skill{s=Clone_ArrowRain} @target
+  - delay 5
+  - skill{s=Clone_ArrowRain} @target
+  - delay 5
+  
+  # Final barrage
+  - skill{s=Clone_ArrowBarrage} @target
+
+Clone_ArrowRain:
+  Skills:
+  - effect:particles{p=crit;a=15;s=0.4} @origin
+  - effect:sound{s=entity.arrow.shoot;v=0.6;p=1.5} @self
+  # Multiple arrows
+  - projectile{onTick=Clone_RainTick;onHit=Clone_RainHit;type=ARROW;velocity=3;gravity=0.1;interval=2;maxduration=40;spread=2;amount=3} @origin
+
+Clone_RainTick:
+  Skills:
+  - effect:particles{p=smoke;a=1;s=0.05} @origin
+
+Clone_RainHit:
+  Skills:
+  - damage{a=8} @target{types=!PLAYER}
+  - effect:particles{p=crit;a=5;s=0.2} @target
+
+Clone_ArrowBarrage:
+  Skills:
+  - effect:particles{p=end_rod;a=30;s=0.6} @origin
+  - effect:sound{s=entity.firework_rocket.blast;v=0.8;p=0.8} @self
+  # Many arrows
+  - projectile{onTick=Clone_RainTick;onHit=Clone_BarrageHit;type=ARROW;velocity=4;gravity=0.05;interval=2;maxduration=50;spread=3;amount=8} @origin
+  - actionmessage{m="&d&l✓ Rain Complete!"} @owner
+
+Clone_BarrageHit:
+  Skills:
+  - damage{a=12;ignorearmor=true} @target{types=!PLAYER}
+  - effect:particles{p=sonic_boom;a=1;s=0.1} @target
+  - potion{t=SLOWNESS;d=40;l=2} @target
+
+
+# ================================
+# DEFAULT ULTIMATE - CLONE EXPLOSION
+# ================================
+# ระเบิดตัวเองสร้างความเสียหาย (ไม่ตาย แค่ลด HP)
+Clone_Explosion:
+  Cooldown: 40
+  Conditions:
+  - "!isowner"
+  Skills:
+  - actionmessage{m="&8&l💥 &c&lCLONE EXPLOSION!"} @owner
+  - message{m="&8━━━━━━━━━━━━━━━━━━━━━"} @owner
+  - message{m="&c  💥 ร่างเงาใช้ &lCLONE EXPLOSION&c!"} @owner
+  - message{m="&8━━━━━━━━━━━━━━━━━━━━━"} @owner
+  
+  # Warning
+  - effect:particles{p=smoke;a=60;s=1} @self
+  - effect:particles{p=flame;a=40;s=0.8} @self
+  - effect:sound{s=entity.creeper.primed;v=0.8;p=0.8} @self
+  - delay 20
+  
+  # Explosion
+  - skill{s=Clone_ExplosionBlast} @self
+
+Clone_ExplosionBlast:
+  Skills:
+  - effect:particles{p=explosion_emitter;a=1;s=0.1} @self
+  - effect:particles{p=flame;a=80;s=1.5} @self
+  - effect:particles{p=smoke;a=100;s=2} @self
+  - effect:particles{p=soul;a=40;s=1.2} @self
+  - effect:sound{s=entity.generic.explode;v=1;p=0.7} @self
+  
+  # Massive damage
+  - damage{a=40;ignorearmor=true} @EntitiesInRadius{r=5;types=!PLAYER}
+  - throw{v=1.2;vy=0.8} @EntitiesInRadius{r=5;types=!PLAYER}
+  - ignite{d=60} @EntitiesInRadius{r=5;types=!PLAYER}
+  
+  # Self damage (sacrifice)
+  - damage{a=30} @self
+  - actionmessage{m="&c&l💥 BOOM! &7Clone HP -30"} @owner
+
+
+# ================================
+# ULTIMATE TRIGGER - Smart Select
+# ================================
+ShadowClone_TriggerUltimate:
+  Cooldown: 20
+  Conditions:
+  - "!isowner"
+  Skills:
+  # Check clone type and trigger appropriate ultimate
+  - skill{s=Clone_ShadowStorm} @self ?wearing{slot=hand;m=DIAMOND_SWORD}
+  - skill{s=Clone_ShadowStorm} @self ?wearing{slot=hand;m=NETHERITE_SWORD}
+  - skill{s=Clone_RainOfShadows} @self ?wearing{slot=hand;m=BOW}
+  - skill{s=Clone_RainOfShadows} @self ?wearing{slot=hand;m=CROSSBOW}
+  - skill{s=Clone_Explosion} @self
+
+
+# ================================
+# ULTIMATE CHARGE SYSTEM
+# ================================
+# Ultimate charges when Clone deals/takes damage
+Clone_ChargeUltimate:
+  Skills:
+  - setvariable{var=mob.ult_charge;val=<mob.ult_charge>+5;type=INTEGER} @self
+  # Check if charged
+  - skill{s=Clone_UltimateReady} @self ?varrange{var=mob.ult_charge;from=100}
+
+Clone_UltimateReady:
+  Skills:
+  - setvariable{var=mob.ult_ready;val=1;type=INTEGER} @self
+  - effect:particles{p=end_rod;a=15;s=0.5} @self
+  - effect:sound{s=block.beacon.activate;v=0.4;p=2} @self
+  - actionmessage{m="&e&l⚡ ULTIMATE READY!"} @owner
+
+Clone_UseUltimate:
+  Conditions:
+  - varequals{var=mob.ult_ready;val=1}
+  Skills:
+  - setvariable{var=mob.ult_charge;val=0;type=INTEGER} @self
+  - setvariable{var=mob.ult_ready;val=0;type=INTEGER} @self
+  - skill{s=ShadowClone_TriggerUltimate} @target

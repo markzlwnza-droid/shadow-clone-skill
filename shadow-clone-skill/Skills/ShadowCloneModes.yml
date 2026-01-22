@@ -1,0 +1,202 @@
+# ================================================
+# SHADOW CLONE - MODES SYSTEM
+# ================================================
+# ใส่ไฟล์นี้ใน: plugins/MythicMobs/Skills/ShadowCloneModes.yml
+# Version: 1.0 - Clone Battle Modes
+# Required: MythicMobs 5.3+
+
+# ================================
+# MODE SWITCHER - เปลี่ยนโหมด
+# ================================
+# ใช้: /mm signal <mobUUID> aggressive|defensive|support
+
+ShadowClone_SetMode_Aggressive:
+  Skills:
+  - setvariable{var=mob.mode;val=aggressive;type=STRING} @self
+  - setvariable{var=mob.damage_bonus;val=1.3;type=FLOAT} @self
+  - setvariable{var=mob.dodge_penalty;val=0.8;type=FLOAT} @self
+  - effect:particles{p=flame;a=20;s=0.4} @self
+  - effect:sound{s=entity.blaze.ambient;v=0.5;p=1.5} @self
+  - actionmessage{m="&c&l⚔ &7Clone Mode: &c&lAGGRESSIVE"} @owner
+  - actionmessage{m="&8[&c+30% DMG &8| &e-20% Dodge&8]"} @owner
+
+ShadowClone_SetMode_Defensive:
+  Skills:
+  - setvariable{var=mob.mode;val=defensive;type=STRING} @self
+  - setvariable{var=mob.dodge_bonus;val=1.4;type=FLOAT} @self
+  - setvariable{var=mob.block_bonus;val=1.5;type=FLOAT} @self
+  - effect:particles{p=enchanted_hit;a=20;s=0.4} @self
+  - effect:sound{s=item.shield.block;v=0.5;p=1.2} @self
+  - actionmessage{m="&b&l🛡 &7Clone Mode: &b&lDEFENSIVE"} @owner
+  - actionmessage{m="&8[&a+40% Dodge &8| &d+50% Block&8]"} @owner
+
+ShadowClone_SetMode_Support:
+  Skills:
+  - setvariable{var=mob.mode;val=support;type=STRING} @self
+  - setvariable{var=mob.support_active;val=1;type=INTEGER} @self
+  - effect:particles{p=heart;a=10;s=0.4} @self
+  - effect:sound{s=block.beacon.activate;v=0.4;p=1.5} @self
+  - actionmessage{m="&a&l💚 &7Clone Mode: &a&lSUPPORT"} @owner
+  - actionmessage{m="&8[&aHeal Owner &8| &eTaunt Mobs&8]"} @owner
+
+
+# ================================
+# AGGRESSIVE MODE SKILLS
+# ================================
+ShadowClone_AggressiveAttack:
+  Conditions:
+  - varequals{var=mob.mode;val=aggressive}
+  - "!isowner"
+  Skills:
+  # Enhanced damage (x1.3)
+  - damage{a=<skill.damage>*1.3;pkb=true} @target
+  - effect:particles{p=crit;a=10;s=0.2} @self
+  - effect:particles{p=sweep_attack;a=1} @self
+  - effect:sound{s=entity.player.attack.crit;v=0.7;p=1} @self
+
+# Aggressive - ลด Dodge chance
+ShadowClone_AggressiveDodge:
+  Conditions:
+  - varequals{var=mob.mode;val=aggressive}
+  Skills:
+  # 80% ของ dodge ปกติ = ~48% dodge
+  - skill{s=ShadowClone_Dodge} @self 0.8
+
+# Aggressive Ultimate - Berserker Fury
+ShadowClone_AggressiveUltimate:
+  Cooldown: 15
+  Conditions:
+  - varequals{var=mob.mode;val=aggressive}
+  Skills:
+  - actionmessage{m="&4&l💢 BERSERKER FURY!"} @owner
+  - effect:particles{p=flame;a=40;s=0.6} @self
+  - effect:particles{p=soul_fire_flame;a=30;s=0.5} @self
+  - effect:sound{s=entity.wither.spawn;v=0.5;p=1.5} @self
+  # Self buff
+  - potion{t=STRENGTH;d=100;l=2} @self
+  - potion{t=SPEED;d=100;l=1} @self
+  - delay 5
+  # AOE Slash
+  - damage{a=20} @EntitiesInRadius{r=4;types=!PLAYER}
+  - throw{v=0.6;vy=0.3} @EntitiesInRadius{r=4;types=!PLAYER}
+  - effect:particles{p=sweep_attack;a=5;s=1} @self
+
+
+# ================================
+# DEFENSIVE MODE SKILLS
+# ================================
+ShadowClone_DefensiveStance:
+  Conditions:
+  - varequals{var=mob.mode;val=defensive}
+  Skills:
+  # Enhanced dodge (x1.4) = ~84% dodge
+  - skill{s=ShadowClone_Dodge} @self 1.0
+
+ShadowClone_DefensiveBlock:
+  Cooldown: 0.3
+  Conditions:
+  - varequals{var=mob.mode;val=defensive}
+  Skills:
+  - cancelevent
+  - effect:sound{s=item.shield.block;v=0.9;p=1} @self
+  - effect:particles{p=crit;a=15;s=0.2} @self
+  - effect:particles{p=enchanted_hit;a=10;s=0.3} @self
+  - actionmessage{m="&b&l🛡 PERFECT BLOCK!"} @owner
+  # Damage reduction
+  - modifydamage{a=0.5;action=multiply}
+
+# Defensive Ultimate - Iron Fortress
+ShadowClone_DefensiveUltimate:
+  Cooldown: 20
+  Conditions:
+  - varequals{var=mob.mode;val=defensive}
+  Skills:
+  - actionmessage{m="&b&l🛡 IRON FORTRESS!"} @owner
+  - effect:particles{p=end_rod;a=50;s=0.8} @self
+  - effect:sound{s=block.anvil.land;v=0.6;p=1.2} @self
+  # Become invulnerable for 3 seconds
+  - potion{t=DAMAGE_RESISTANCE;d=60;l=4} @self
+  - potion{t=SLOW;d=60;l=2} @self
+  # Reflect damage aura
+  - aura{duration=60;onTick=Clone_FortressAura;interval=10} @self
+
+Clone_FortressAura:
+  Skills:
+  - effect:particles{p=enchanted_hit;a=8;s=0.5} @self
+  - damage{a=5} @EntitiesInRadius{r=2;types=!PLAYER}
+
+
+# ================================
+# SUPPORT MODE SKILLS
+# ================================
+ShadowClone_SupportHeal:
+  Cooldown: 5
+  Conditions:
+  - varequals{var=mob.mode;val=support}
+  TargetConditions:
+  - health{h=<80%} @owner
+  Skills:
+  - heal{a=8} @owner
+  - effect:particles{p=heart;a=8;s=0.3} @owner
+  - effect:particles{p=happy_villager;a=10;s=0.4} @owner
+  - effect:sound{s=entity.player.levelup;v=0.3;p=2} @owner
+  - actionmessage{m="&a&l♥ +8 HP"} @owner
+
+ShadowClone_SupportBuff:
+  Cooldown: 10
+  Conditions:
+  - varequals{var=mob.mode;val=support}
+  Skills:
+  - potion{t=REGENERATION;d=100;l=0} @owner
+  - potion{t=STRENGTH;d=100;l=0} @owner
+  - effect:particles{p=totem_of_undying;a=15;s=0.5} @owner
+  - actionmessage{m="&e&l✨ BUFFED!"} @owner
+
+ShadowClone_SupportTaunt:
+  Cooldown: 8
+  Conditions:
+  - varequals{var=mob.mode;val=support}
+  Skills:
+  - actionmessage{m="&6&l📢 TAUNT!"} @owner
+  - effect:particles{p=angry_villager;a=10;s=0.5} @self
+  - effect:sound{s=entity.ravager.roar;v=0.4;p=1.5} @self
+  # Draw aggro from nearby mobs
+  - threat{a=100} @EntitiesInRadius{r=10;types=!PLAYER}
+  - potion{t=GLOWING;d=40} @self
+
+# Support Ultimate - Guardian Angel
+ShadowClone_SupportUltimate:
+  Cooldown: 30
+  Conditions:
+  - varequals{var=mob.mode;val=support}
+  Skills:
+  - actionmessage{m="&a&l👼 GUARDIAN ANGEL!"} @owner
+  - effect:particles{p=end_rod;a=60;s=1} @owner
+  - effect:particles{p=totem_of_undying;a=40;s=0.8} @owner
+  - effect:sound{s=item.totem.use;v=0.6;p=1.2} @owner
+  # Full heal + Buffs
+  - heal{a=50} @owner
+  - potion{t=DAMAGE_RESISTANCE;d=100;l=2} @owner
+  - potion{t=REGENERATION;d=100;l=2} @owner
+  - potion{t=ABSORPTION;d=200;l=3} @owner
+
+
+# ================================
+# MODE DETECTION AI
+# ================================
+# เรียกใน onTimer เพื่อ AI เลือก action ตาม mode
+ShadowClone_ModeAI:
+  Skills:
+  - skill{s=ShadowClone_SupportHeal} @owner ?varequals{var=mob.mode;val=support}
+  - skill{s=ShadowClone_SupportBuff} @owner ?varequals{var=mob.mode;val=support}
+  - skill{s=ShadowClone_SupportTaunt} @self ?varequals{var=mob.mode;val=support}
+
+
+# ================================
+# DEFAULT MODE INIT
+# ================================
+ShadowClone_InitMode:
+  Skills:
+  - setvariable{var=mob.mode;val=aggressive;type=STRING} @self
+  - setvariable{var=mob.damage_bonus;val=1.0;type=FLOAT} @self
+  - setvariable{var=mob.dodge_bonus;val=1.0;type=FLOAT} @self

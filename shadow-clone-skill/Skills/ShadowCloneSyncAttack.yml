@@ -1,0 +1,145 @@
+# ================================================
+# SHADOW CLONE - SYNC ATTACK SYSTEM
+# ================================================
+# ใส่ไฟล์นี้ใน: plugins/MythicMobs/Skills/ShadowCloneSyncAttack.yml
+# Version: 1.0 - Clone attacks when Owner attacks
+# Required: MythicMobs 5.3+
+
+# ================================
+# SYNC ATTACK - โจมตีพร้อม Owner
+# ================================
+
+# Main Sync Attack Trigger
+# เรียกเมื่อ Owner โจมตี (ต้อง setup signal system)
+ShadowClone_SyncAttack:
+  Cooldown: 1.5
+  Conditions:
+  - "!isowner"
+  Skills:
+  # Visual sync effect
+  - effect:particles{p=enchanted_hit;a=8;s=0.3} @self
+  - effect:sound{s=entity.player.attack.sweep;v=0.5;p=1.3} @self
+  
+  # Attack based on range
+  - skill{s=Clone_SyncMelee} @target ?distance{d=<4}
+  - skill{s=Clone_SyncRanged} @target ?distance{d=>4}
+
+Clone_SyncMelee:
+  Conditions:
+  - "!isowner"
+  Skills:
+  - damage{a=10;pkb=true} @target
+  - effect:particles{p=sweep_attack;a=1} @self
+  - actionmessage{m="&7&l⚔ SYNC!"} @owner
+
+Clone_SyncRanged:
+  Conditions:
+  - "!isowner"
+  Skills:
+  - projectile{onTick=Clone_SyncArrowTick;onHit=Clone_SyncArrowHit;type=ARROW;velocity=3;interval=2;maxduration=40} @target
+  - actionmessage{m="&7&l🏹 SYNC!"} @owner
+
+Clone_SyncArrowTick:
+  Skills:
+  - effect:particles{p=crit;a=1;s=0.05} @origin
+
+Clone_SyncArrowHit:
+  Conditions:
+  - "!isowner"
+  Skills:
+  - damage{a=8} @target
+  - effect:particles{p=crit;a=6;s=0.2} @target
+
+
+# ================================
+# COMBO SYNC - โจมตีต่อเนื่อง
+# ================================
+# เมื่อ Owner combo → Clone combo ตาม
+ShadowClone_ComboSync:
+  Cooldown: 0.5
+  Conditions:
+  - "!isowner"
+  Skills:
+  - setvariable{var=mob.sync_combo;val=<mob.sync_combo>+1;type=INTEGER} @self
+  
+  # Normal hits
+  - skill{s=Clone_SyncHit} @target ?varrange{var=mob.sync_combo;to=4}
+  
+  # Combo finisher at 5 hits
+  - skill{s=Clone_SyncFinisher} @target ?varequals{var=mob.sync_combo;val=5}
+
+Clone_SyncHit:
+  Skills:
+  - damage{a=8} @target
+  - effect:particles{p=crit;a=4;s=0.15} @target
+
+Clone_SyncFinisher:
+  Skills:
+  - setvariable{var=mob.sync_combo;val=0;type=INTEGER} @self
+  - effect:particles{p=sweep_attack;a=3;s=0.8} @self
+  - effect:sound{s=entity.player.attack.crit;v=0.8;p=0.8} @self
+  - damage{a=18;pkb=true} @target
+  - throw{v=0.5;vy=0.3} @target
+  - actionmessage{m="&c&l⚔ COMBO FINISH!"} @owner
+
+
+# ================================
+# DUAL ATTACK - โจมตีพร้อมกัน 2 ทิศ
+# ================================
+ShadowClone_DualAttack:
+  Cooldown: 8
+  Conditions:
+  - "!isowner"
+  Skills:
+  - actionmessage{m="&e&l⚔ DUAL STRIKE!"} @owner
+  
+  # Clone teleport behind target
+  - effect:particles{p=portal;a=20;s=0.4} @self
+  - delay 3
+  
+  # Attack from behind
+  - teleport @target ~-2
+  - delay 2
+  - skill{s=Clone_BackStab} @target
+
+Clone_BackStab:
+  Conditions:
+  - "!isowner"
+  Skills:
+  - effect:particles{p=crit;a=15;s=0.3} @target
+  - effect:sound{s=entity.player.attack.crit;v=0.8;p=1.2} @self
+  - damage{a=15;ignorearmor=true} @target
+  - potion{t=SLOWNESS;d=20;l=1} @target
+
+
+# ================================
+# MIRROR SKILL - เลียนแบบท่า Owner
+# ================================
+ShadowClone_MirrorSkill:
+  Cooldown: 5
+  Skills:
+  - effect:particles{p=portal;a=15;s=0.3} @self
+  - effect:particles{p=enchanted_hit;a=10;s=0.25} @self
+  - effect:sound{s=entity.enderman.teleport;v=0.4;p=1.5} @self
+  
+  # Copy owner's last action (visual only)
+  - actionmessage{m="&d&l↔ MIRROR!"} @owner
+
+
+# ================================
+# TEAMWORK BONUS
+# ================================
+# เมื่อ Clone และ Owner โจมตี target เดียวกัน
+ShadowClone_TeamworkBonus:
+  Skills:
+  - setvariable{var=mob.teamwork;val=<mob.teamwork>+1;type=INTEGER} @self
+  # ทุก 3 hits = bonus damage
+  - skill{s=Clone_TeamworkBurst} @target ?varrange{var=mob.teamwork;from=3}
+
+Clone_TeamworkBurst:
+  Skills:
+  - setvariable{var=mob.teamwork;val=0;type=INTEGER} @self
+  - effect:particles{p=totem_of_undying;a=20;s=0.5} @target
+  - effect:sound{s=entity.player.levelup;v=0.4;p=2} @self
+  - damage{a=10;ignorearmor=true} @target
+  - actionmessage{m="&e&l★ TEAMWORK BONUS!"} @owner
